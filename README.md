@@ -10,6 +10,8 @@
 FitCoach Pro est une application web complète de suivi sportif qui agit comme un **coach sportif intelligent**, un **tracker de performance avancé** et un **assistant nutritionnel** — le tout dans une seule interface.
 
 ---
+## Accès 
+Application : [FitCoach-Pro](https://florencelc.github.io/FitCoach-Pro/)
 
 ## ✨ Fonctionnalités
 
