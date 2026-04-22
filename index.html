@@ -462,7 +462,6 @@
     <button class="ai-send-btn" onclick="sendAIMessage()">➤</button>
   </div>
 </div>
-<button class="ai-toggle-btn" id="ai-toggle-btn" onclick="toggleAIPanel()">🤖</button>
 
 <!-- ═══════ TOASTS ═══════ -->
 <div id="toast-container" class="toast-container"></div>
@@ -484,7 +483,11 @@
         <input type="text" class="form-input" id="workout-title-input" placeholder="Ex: Push Day, Jambes..." onchange="if(currentWorkout)currentWorkout.title=this.value">
       </div>
       <div class="form-group">
-        <label class="form-label">Type d'entraînement</label>
+        <label class="form-label">Date</label>
+        <input type="date" class="form-input" id="workout-date-input" onchange="if(currentWorkout)currentWorkout.date=this.value">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Type</label>
         <select class="form-select" id="workout-training-type" onchange="if(currentWorkout)currentWorkout.trainingType=this.value">
           <option value="hypertrophie">Hypertrophie</option>
           <option value="force">Force</option>
@@ -660,10 +663,73 @@
     <div id="interval-fields" style="display:none">
       <div class="form-group">
         <label class="form-label">Temps des tours / intervalles</label>
-        <textarea id="run-intervals" class="form-textarea" rows="5" placeholder="Format: 1 3:45&#10;2 3:50&#10;3 3:40&#10;(un tour par ligne, n° tour puis temps)"></textarea>
+        <textarea id="run-intervals" class="form-textarea" rows="4" placeholder="Format: 1 3:45&#10;2 3:50&#10;3 3:40&#10;(un tour par ligne, n° tour puis temps)"></textarea>
         <div class="text-muted text-sm mt-4">Un tour par ligne. Ex : "1 3:45" = tour 1 en 3min45</div>
       </div>
     </div>
+
+    <!-- Paramètres avancés (masqués par défaut) -->
+    <div style="margin-bottom:8px">
+      <button type="button" class="btn btn-ghost btn-sm w-full" onclick="toggleRunAdvanced()"
+        id="btn-run-advanced" style="justify-content:space-between">
+        <span>⚙️ Paramètres avancés</span><span id="run-advanced-arrow">▼</span>
+      </button>
+    </div>
+    <div id="run-advanced-fields" style="display:none">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">FC moy. (bpm)</label>
+          <input type="number" id="run-hr-avg" class="form-input" placeholder="155" min="0" max="250">
+        </div>
+        <div class="form-group">
+          <label class="form-label">FC max (bpm)</label>
+          <input type="number" id="run-hr-max" class="form-input" placeholder="180" min="0" max="250">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Calories (kcal)</label>
+          <input type="number" id="run-calories" class="form-input" placeholder="350" min="0">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Dénivelé + (m)</label>
+          <input type="number" id="run-elevation-up" class="form-input" placeholder="120" min="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Dénivelé - (m)</label>
+          <input type="number" id="run-elevation-down" class="form-input" placeholder="115" min="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Puissance (W)</label>
+          <input type="number" id="run-power" class="form-input" placeholder="280" min="0">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Charge d'entraînement</label>
+          <input type="number" id="run-training-load" class="form-input" placeholder="85" min="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Effet aérobie (0-5)</label>
+          <input type="number" id="run-aerobic-effect" class="form-input" placeholder="3.2" min="0" max="5" step="0.1">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Effet anaérobie (0-5)</label>
+          <input type="number" id="run-anaerobic-effect" class="form-input" placeholder="1.5" min="0" max="5" step="0.1">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Cadence moy. (spm)</label>
+          <input type="number" id="run-cadence" class="form-input" placeholder="170" min="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Temp. ressenti (°C)</label>
+          <input type="number" id="run-temp" class="form-input" placeholder="18" min="-30" max="50">
+        </div>
+      </div>
+    </div>
+
     <div class="form-group"><label class="form-label">Date</label><input type="date" id="run-date" class="form-input"></div>
     <div class="form-group"><label class="form-label">Notes</label><textarea id="run-notes" class="form-textarea" placeholder="Sensations, météo..."></textarea></div>
     <div class="modal-footer">
@@ -792,6 +858,15 @@
 <div class="modal-overlay" id="modal-nutrition-log">
   <div class="modal">
     <div class="modal-header"><div class="modal-title">🥗 Log du jour</div><button class="modal-close" onclick="closeModal('modal-nutrition-log')">✕</button></div>
+    <!-- IA : estimation depuis description -->
+    <div style="background:rgba(0,229,255,0.05);border:1px solid rgba(0,229,255,0.2);border-radius:var(--radius-sm);padding:12px;margin-bottom:16px">
+      <div class="form-label mb-6">🤖 Estimation IA depuis votre assiette</div>
+      <textarea id="nutr-plate-desc" class="form-textarea" rows="2" placeholder="Ex: 150g de poulet grillé, 200g de riz, salade verte, filet d'huile d'olive..."></textarea>
+      <button class="btn btn-neon btn-sm w-full mt-8" id="btn-estimate-calories" onclick="estimateCaloriesFromPlate()">
+        🤖 Estimer les calories
+      </button>
+      <div id="nutr-estimate-result" style="display:none;margin-top:8px;font-size:12px;color:var(--accent-green);line-height:1.5"></div>
+    </div>
     <div class="form-group"><label class="form-label">Calories totales</label><input type="number" id="nutr-log-calories" class="form-input" placeholder="2500"></div>
     <div class="form-row">
       <div class="form-group"><label class="form-label">Protéines (g)</label><input type="number" id="nutr-log-protein" class="form-input" placeholder="180"></div>
@@ -1336,14 +1411,83 @@ async function sendAIMessage() {
   typing.innerHTML = '<div class="ai-msg-avatar coach">🤖</div><div class="ai-msg-bubble coach-bubble"><span class="spinner"></span> En train de réfléchir...</div>';
   msgs.appendChild(typing); msgs.scrollTop = 9999;
 
-  // On envoie l'historique récent (sans les messages assistant de bienvenue)
+  // Détecter si le texte ressemble à une séance (mots-clés)
+  const workoutKeywords = /séance|exercice|répétition|reps|séries|kg|squat|traction|développé|course|km\/h|allure|musculation|entraînement|wod|circuit/i;
+  const looksLikeWorkout = workoutKeywords.test(text) && text.length > 80;
+
   const history = aiHistory.slice(-16);
-  const response = await AI.chat(text, history);
+  const [response, parsedWorkout] = await Promise.all([
+    AI.chat(text, history),
+    looksLikeWorkout ? AI.parseWorkoutFromText(text) : Promise.resolve({detected:false})
+  ]);
 
   document.getElementById('ai-typing')?.remove();
   _renderMessage('coach', response);
   _saveMessageToSession('assistant', response);
+
+  // Si une séance a été détectée, proposer de l'enregistrer
+  if(parsedWorkout.detected) {
+    setTimeout(() => {
+      const confirmMsg = '📋 J\'ai détecté une séance dans ton message. Veux-tu que je l\'enregistre dans ton historique ?';
+      _renderMessage('coach', confirmMsg);
+      _saveMessageToSession('assistant', confirmMsg);
+      // Bouton d'action inline
+      const container = document.getElementById('ai-messages');
+      const actionDiv = document.createElement('div');
+      actionDiv.style.cssText = 'padding:8px 12px 12px 44px;display:flex;gap:8px';
+      actionDiv.innerHTML = '<button class="btn btn-primary btn-sm" onclick="saveDetectedWorkout(' + JSON.stringify(JSON.stringify(parsedWorkout)) + ',this.parentElement)">✅ Oui, enregistrer</button>'
+        + '<button class="btn btn-ghost btn-sm" onclick="this.parentElement.remove()">Non merci</button>';
+      container.appendChild(actionDiv);
+      container.scrollTop = container.scrollHeight;
+    }, 300);
+  }
+
   renderChatHistoryList();
+}
+
+function saveDetectedWorkout(jsonStr, btnContainer) {
+  try {
+    const data = JSON.parse(jsonStr);
+    if(!data.detected) return;
+    const tod = data.date || today();
+
+    if(data.type === 'course' && data.runs) {
+      const r = data.runs;
+      state.runs.push({
+        id: generateId(), date: tod, type: 'Course (CoachIA)',
+        distance: r.distance, duration: data.duration,
+        time: r.time, pace: r.pace, notes: r.notes || 'Importé via CoachIA'
+      });
+      saveState(); renderRunHistory();
+      showToast('🏃 Course enregistrée depuis le chat !', 'success');
+    } else if(data.exercises?.length) {
+      const w = {
+        id: generateId(), date: tod, title: data.title || 'Séance (CoachIA)',
+        trainingType: data.trainingType || 'général', duration: data.duration || 0,
+        items: data.exercises.map(ex => ({
+          type: 'exercise', exerciseId: generateId(),
+          name: ex.name, muscle: ex.muscle || 'Général',
+          sets: ex.sets || [{reps:'',weight:'',rest:90}]
+        })),
+        exercises: data.exercises.map(ex => ({
+          exerciseId: generateId(), name: ex.name, muscle: ex.muscle || 'Général',
+          sets: ex.sets || [{reps:'',weight:'',rest:90}]
+        })),
+        totalVolume: data.exercises.reduce((s,ex) => s + calcVolume(ex.sets||[]), 0),
+        notes: 'Importé via CoachIA'
+      };
+      state.workouts.push(w);
+      saveState(); renderWorkoutHistory();
+      showToast('🏋️ Séance enregistrée depuis le chat !', 'success');
+    }
+
+    if(btnContainer) {
+      btnContainer.innerHTML = '<span style="font-size:12px;color:var(--accent-green);padding:4px 12px">✅ Séance enregistrée !</span>';
+      setTimeout(() => btnContainer.remove(), 2000);
+    }
+  } catch(e) {
+    showToast('❌ Impossible d\'analyser la séance', 'error');
+  }
 }
 
 function renderChatHistoryList() {
@@ -1370,13 +1514,40 @@ function toggleChatHistory() {
 
 // ── Timer ──
 let timerInterval = null, timerSeconds = 0, timerRunning = false;
+// ── Générateur de son pour le timer (Web Audio API) ──
+function _playTimerBeep() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    // 3 bips courts + 1 long
+    [[0, 0.15, 880], [0.2, 0.15, 880], [0.4, 0.15, 880], [0.6, 0.5, 660]].forEach(([start, dur, freq]) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.4, ctx.currentTime + start);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + start + dur);
+      osc.start(ctx.currentTime + start);
+      osc.stop(ctx.currentTime + start + dur + 0.05);
+    });
+    setTimeout(() => ctx.close(), 1500);
+  } catch(e) { /* Web Audio non supporté */ }
+}
+
 function startTimer(seconds) {
   timerSeconds = seconds; timerRunning = true;
   clearInterval(timerInterval);
   renderTimerDisplay();
   timerInterval = setInterval(() => {
-    if (timerSeconds <= 0) { stopTimer(); showToast('⏱️ Repos terminé !', 'success'); if(navigator.vibrate) navigator.vibrate([200,100,200]); return; }
-    timerSeconds--; renderTimerDisplay();
+    if (timerSeconds <= 0) {
+      stopTimer();
+      _playTimerBeep();
+      if(navigator.vibrate) navigator.vibrate([200,100,200,100,400]);
+      showToast('⏱️ Repos terminé !', 'success');
+      return;
+    }
+    timerSeconds--;
+    renderTimerDisplay();
   }, 1000);
 }
 function pauseTimer() {
@@ -1597,6 +1768,26 @@ const AI = {
   async analyzeWorkout(workout) {
     return stripMarkdown(await this._call(this._system(),
       'Analyse cette séance de musculation que je viens de terminer :\n' + JSON.stringify(workout, null, 2) + '\n\nDonne : 1) Bilan global 2) Points forts 3) Points à améliorer 4) Conseil pour la prochaine séance.'));
+  },
+
+  async parseWorkoutFromText(text) {
+    const system = 'Tu es un assistant de fitness expert. Tu analyses du texte décrivant une séance de sport et tu extrais les données structurées. Réponds UNIQUEMENT avec du JSON valide, sans texte autour, sans markdown.';
+    const user = 'Analyse ce texte décrivant une séance de sport et extrais les données :\n' + text
+      + '\n\nRetourne ce JSON exact :\n{"detected": true, "title": "...", "date": "YYYY-MM-DD ou null", "type": "musculation|course|combat|natation", "duration": null, "trainingType": "hypertrophie|force|endurance|général", "exercises": [{"name": "...", "muscle": "...", "sets": [{"reps": "...", "weight": "...", "rest": 0}]}], "runs": {"distance": null, "time": "MM:SS", "pace": null, "notes": "..."}}\nSi ce n\'est pas une séance sportive, retourne {"detected": false}';
+    const resp = await this._call(system, user);
+    try {
+      const json = resp.match(/\{[\s\S]*\}/)?.[0];
+      return json ? JSON.parse(json) : { detected: false };
+    } catch { return { detected: false }; }
+  },
+
+  async estimatePlateCalories(description) {
+    const system = 'Tu es un nutritionniste expert. Analyse la description d\'un repas et estime les valeurs nutritionnelles. Réponds en français, en texte simple sans markdown.';
+    const user = 'Estime les valeurs nutritionnelles approximatives de ce repas : ' + description
+      + '\n\nDonne : calories totales (kcal), protéines (g), glucides (g), lipides (g). '
+      + 'Sois précis dans ton estimation. Format : "Estimation : environ X kcal | Protéines : Xg | Glucides : Xg | Lipides : Xg"'
+      + '\nAjoute une ligne d\'explication brève sur les aliments les plus caloriques.';
+    return await this._call(system, user);
   }
 };
 // ════════════════════════════════════════════════════════════
@@ -1788,6 +1979,7 @@ function renderEditTemplateItems(tpl) {
       </div>`;
     }
     if(item.type === 'wod') {
+      if(!item.sets || !item.sets.length) item.sets = [{rounds:'1',weight:'',rest:0}];
       return `<div style="background:var(--bg-3);border:1px solid rgba(255,209,102,0.2);border-radius:8px;padding:10px 12px;margin-bottom:8px">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
           <span style="color:var(--accent-gold);font-weight:700">⚡ WOD</span>
@@ -1795,8 +1987,23 @@ function renderEditTemplateItems(tpl) {
             onchange="updateTplWodName('${tpl.id}',${ii},this.value)">
           <button onclick="removeTplItem('${tpl.id}',${ii})" style="color:var(--text-3);font-size:16px">×</button>
         </div>
-        <textarea class="form-textarea" style="font-size:12px;min-height:70px" placeholder="Détail du WOD..."
+        <textarea class="form-textarea" style="font-size:12px;min-height:60px;margin-bottom:10px" placeholder="Détail du WOD..."
           onchange="updateTplWodDesc('${tpl.id}',${ii},this.value)">${item.description||''}</textarea>
+        <div style="display:grid;grid-template-columns:20px 1fr 1fr 1fr 18px;gap:4px;margin-bottom:4px;font-size:10px;color:var(--text-2);text-align:center">
+          <span>#</span><span>Rounds</span><span>Poids kg</span><span>Repos s</span><span></span>
+        </div>
+        ${(item.sets||[]).map((s,si)=>`
+          <div style="display:grid;grid-template-columns:20px 1fr 1fr 1fr 18px;gap:4px;margin-bottom:3px;align-items:center">
+            <span style="color:var(--text-2);text-align:center;font-size:11px">${si+1}</span>
+            <input type="text" value="${s.rounds||''}" placeholder="rounds" class="set-input" style="font-size:11px;padding:3px 6px"
+              onchange="updateTplWodSet('${tpl.id}',${ii},${si},'rounds',this.value)">
+            <input type="number" value="${s.weight||''}" placeholder="kg" step="0.5" class="set-input" style="font-size:11px;padding:3px 6px"
+              onchange="updateTplWodSet('${tpl.id}',${ii},${si},'weight',this.value)">
+            <input type="number" value="${s.rest||0}" placeholder="s" class="set-input" style="font-size:11px;padding:3px 6px"
+              onchange="updateTplWodSet('${tpl.id}',${ii},${si},'rest',this.value)">
+            <button onclick="removeTplWodSet('${tpl.id}',${ii},${si})" style="color:var(--text-3);font-size:12px">×</button>
+          </div>`).join('')}
+        <button onclick="addTplWodSet('${tpl.id}',${ii})" style="font-size:10px;color:var(--text-2);cursor:pointer;background:none;border:none;padding:2px 0;margin-top:2px">+ round</button>
       </div>`;
     }
     // Exercice standard
@@ -1838,6 +2045,9 @@ function addTplExSet(id,ii) { const t=_getTpl(id); if(!t) return; const item=_ge
 function updateTplExSet(id,ii,si,f,v) { const t=_getTpl(id); if(!t) return; const s=_getTplItems(t)[ii]?.sets?.[si]; if(s) s[f]=v; saveState(); }
 function updateTplWodName(id,ii,v) { const t=_getTpl(id); if(!t) return; const item=_getTplItems(t)[ii]; if(item) item.name=v; saveState(); }
 function updateTplWodDesc(id,ii,v) { const t=_getTpl(id); if(!t) return; const item=_getTplItems(t)[ii]; if(item) item.description=v; saveState(); }
+function updateTplWodSet(id,ii,si,f,v) { const t=_getTpl(id); if(!t) return; const s=_getTplItems(t)[ii]?.sets?.[si]; if(s) s[f]=v; saveState(); }
+function addTplWodSet(id,ii) { const t=_getTpl(id); if(!t) return; const item=_getTplItems(t)[ii]; if(!item) return; if(!item.sets) item.sets=[]; const l=item.sets[item.sets.length-1]||{}; item.sets.push({rounds:l.rounds||'1',weight:l.weight||'',rest:l.rest||0}); _saveTplAndRefresh(t); }
+function removeTplWodSet(id,ii,si) { const t=_getTpl(id); if(!t) return; _getTplItems(t)[ii]?.sets?.splice(si,1); _saveTplAndRefresh(t); }
 
 function saveEditTemplate() {
   const id = document.getElementById('edit-tpl-id')?.value;
@@ -1936,6 +2146,8 @@ function startNewWorkout() {
   };
   document.getElementById('active-workout-title').textContent = currentWorkout.title;
   document.getElementById('workout-title-input').value = currentWorkout.title;
+  const wdInput = document.getElementById('workout-date-input');
+  if(wdInput) wdInput.value = today();
   setVal('workout-training-type','hypertrophie');
   renderActiveWorkout();
   openModal('modal-workout');
@@ -2030,7 +2242,10 @@ function renderBlocItem(bloc, ii) {
 }
 
 function renderWodItem(wod, ii) {
+  // S'assurer qu'il y a au moins un set
+  if(!wod.sets || !wod.sets.length) wod.sets = [{ rounds:'1', weight:'', rest:0 }];
   const exLines = (wod.description || '').split('\n').filter(l => l.trim());
+
   return `<div class="exercise-entry" style="border-left:3px solid var(--accent-gold)">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
       <span style="font-size:16px">⚡</span>
@@ -2038,10 +2253,30 @@ function renderWodItem(wod, ii) {
       <span class="badge badge-gold">WOD</span>
       <button onclick="removeItem(${ii})" style="margin-left:auto;color:var(--text-3);font-size:18px">×</button>
     </div>
-    ${exLines.length ? `<div style="background:var(--bg-3);border-radius:6px;padding:8px 10px;font-size:12px;color:var(--text-1);line-height:1.8">
+
+    ${exLines.length ? `
+    <div style="background:var(--bg-3);border-radius:6px;padding:8px 10px;font-size:12px;color:var(--text-1);line-height:1.8;margin-bottom:10px">
       ${exLines.map(l => `<div>• ${l}</div>`).join('')}
     </div>` : ''}
-    ${wod.description ? '' : '<div class="text-muted text-sm">Aucun détail renseigné</div>'}
+
+    <div style="display:grid;grid-template-columns:28px 1fr 1fr 1fr 22px;gap:4px;margin-bottom:4px;font-size:10px;color:var(--text-2);text-align:center">
+      <span>#</span><span>Rounds</span><span>Poids / charge (kg)</span><span>Repos (s)</span><span></span>
+    </div>
+    ${(wod.sets||[]).map((s,si) => `
+      <div style="display:grid;grid-template-columns:28px 1fr 1fr 1fr 22px;gap:4px;margin-bottom:3px;align-items:center">
+        <span style="text-align:center;font-size:11px;color:var(--text-2)">${si+1}</span>
+        <input class="set-input" type="text" placeholder="rounds" value="${s.rounds||''}"
+          onchange="updateItemSet(${ii},${si},'rounds',this.value)">
+        <input class="set-input" type="number" placeholder="kg" value="${s.weight||''}" step="0.5"
+          onchange="updateItemSet(${ii},${si},'weight',this.value)">
+        <input class="set-input" type="number" placeholder="s" value="${s.rest||0}"
+          onchange="updateItemSet(${ii},${si},'rest',this.value)">
+        <button onclick="removeItemSet(${ii},${si})" style="color:var(--text-3);font-size:14px">×</button>
+      </div>`).join('')}
+    <div style="display:flex;gap:6px;margin-top:6px">
+      <button class="btn btn-ghost btn-sm" onclick="addItemSet(${ii})">+ Round</button>
+      ${wod.sets?.[wod.sets.length-1]?.rest > 0 ? `<button class="btn btn-ghost btn-sm" onclick="startTimer(${wod.sets[wod.sets.length-1].rest})">⏱️ Timer</button>` : ''}
+    </div>
   </div>`;
 }
 
@@ -2159,7 +2394,10 @@ function addWODToWorkout() {
   const desc = document.getElementById('wod-desc')?.value?.trim();
   if(!name){ showToast('⚠️ Nom du WOD requis','error'); return; }
   if(!currentWorkout.items) currentWorkout.items = [];
-  currentWorkout.items.push({ type:'wod', id:generateId(), name, description:desc });
+  currentWorkout.items.push({
+    type:'wod', id:generateId(), name, description:desc,
+    sets:[{ rounds:'1', weight:'', rest:0 }]
+  });
   closeModal('modal-add-wod');
   renderActiveWorkout();
 }
@@ -2193,6 +2431,7 @@ function updateSet(ei,si,f,v){ updateItemSet(ei,si,f,v); }
 function finishWorkout() {
   if(!currentWorkout||(currentWorkout.items||[]).length===0){ showToast('⚠️ Ajoutez au moins un exercice','error'); return; }
   currentWorkout.title = document.getElementById('workout-title-input')?.value || currentWorkout.title;
+  currentWorkout.date = document.getElementById('workout-date-input')?.value || currentWorkout.date || today();
   currentWorkout.trainingType = document.getElementById('workout-training-type')?.value || 'hypertrophie';
   currentWorkout.duration = Math.round((Date.now()-currentWorkout.startTime)/60000)||1;
   // Calcul volume sur tous les exercices (blocs inclus)
@@ -2450,9 +2689,24 @@ function saveRun() {
     }
   }
 
-  const run = { id:generateId(), date, type, distance, duration:Math.round(totalMin)||0,
-    time:`${String(timeMin).padStart(2,'0')}:${String(timeSec).padStart(2,'0')}`,
-    pace, notes, intervals };
+  const run = {
+    id: generateId(), date, type, distance,
+    duration: Math.round(totalMin)||0,
+    time: `${String(timeMin).padStart(2,'0')}:${String(timeSec).padStart(2,'0')}`,
+    pace, notes, intervals,
+    // Paramètres avancés
+    hrAvg:       parseInt(document.getElementById('run-hr-avg')?.value)||null,
+    hrMax:       parseInt(document.getElementById('run-hr-max')?.value)||null,
+    calories:    parseInt(document.getElementById('run-calories')?.value)||null,
+    elevUp:      parseInt(document.getElementById('run-elevation-up')?.value)||null,
+    elevDown:    parseInt(document.getElementById('run-elevation-down')?.value)||null,
+    power:       parseInt(document.getElementById('run-power')?.value)||null,
+    trainingLoad:parseFloat(document.getElementById('run-training-load')?.value)||null,
+    aerobicEff:  parseFloat(document.getElementById('run-aerobic-effect')?.value)||null,
+    anaerobicEff:parseFloat(document.getElementById('run-anaerobic-effect')?.value)||null,
+    cadence:     parseInt(document.getElementById('run-cadence')?.value)||null,
+    temperature: parseInt(document.getElementById('run-temp')?.value)||null,
+  };
   state.runs.push(run);
   addXP(Math.round((distance||0)*5)||10);
   updateStreak(); checkAchievements(); saveState();
@@ -2465,6 +2719,15 @@ function toggleIntervalFields() {
   const type = document.getElementById('run-type')?.value;
   const box = document.getElementById('interval-fields');
   if(box) box.style.display = type==='Fractionné' ? 'block':'none';
+}
+
+function toggleRunAdvanced() {
+  const box = document.getElementById('run-advanced-fields');
+  const arrow = document.getElementById('run-advanced-arrow');
+  if(!box) return;
+  const open = box.style.display === 'none' || !box.style.display;
+  box.style.display = open ? 'block' : 'none';
+  if(arrow) arrow.textContent = open ? '▲' : '▼';
 }
 
 function renderRunHistory() {
@@ -2900,6 +3163,26 @@ async function getNutritionAdvice() {
   if(btn){btn.textContent='🤖 Recommandations IA';btn.disabled=false;}
   const el=document.getElementById('nutr-ai-result'), box=document.getElementById('nutr-ai-box');
   if(el){el.textContent=stripMarkdown(advice); if(box) box.style.display='block';}
+}
+
+async function estimateCaloriesFromPlate() {
+  const desc = document.getElementById('nutr-plate-desc')?.value?.trim();
+  if(!desc){ showToast('⚠️ Décrivez votre assiette','error'); return; }
+  const btn = document.getElementById('btn-estimate-calories');
+  if(btn){ btn.innerHTML='<span class="spinner"></span> Calcul...'; btn.disabled=true; }
+  const result = await AI.estimatePlateCalories(desc);
+  if(btn){ btn.textContent='🤖 Estimer les calories'; btn.disabled=false; }
+  const el = document.getElementById('nutr-estimate-result');
+  if(el){ el.textContent = stripMarkdown(result); el.style.display='block'; }
+  // Auto-remplir les champs si l'IA retourne des valeurs
+  const calMatch = result.match(/(\d{3,4})\s*(?:kcal|cal|calories)/i);
+  const protMatch = result.match(/protéines?\s*[:\s]+(\d+)\s*g/i);
+  const carbMatch = result.match(/glucides?\s*[:\s]+(\d+)\s*g/i);
+  const fatMatch  = result.match(/lipides?\s*[:\s]+(\d+)\s*g/i);
+  if(calMatch)  { const el=document.getElementById('nutr-log-calories'); if(el) el.value=calMatch[1]; }
+  if(protMatch) { const el=document.getElementById('nutr-log-protein');  if(el) el.value=protMatch[1]; }
+  if(carbMatch) { const el=document.getElementById('nutr-log-carbs');    if(el) el.value=carbMatch[1]; }
+  if(fatMatch)  { const el=document.getElementById('nutr-log-fat');      if(el) el.value=fatMatch[1]; }
 }
 
 // ════════════════════════════════════════════════
