@@ -10,6 +10,15 @@
   <link rel="stylesheet" href="css/style.css">
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+@media (min-width: 641px) {
+  #ai-fab-btn { bottom: 28px !important; right: 28px !important; width: 52px !important; height: 52px !important; font-size: 22px !important; }
+}
+@media (max-width: 640px) {
+  #ai-fab-btn { bottom: 72px; right: 14px; }
+  .ai-panel { bottom: 56px !important; }
+}
+</style>
 </head>
 <body>
 <div id="app">
@@ -463,6 +472,15 @@
   </div>
 </div>
 
+<!-- Bouton CoachIA flottant -->
+<button id="ai-fab-btn" onclick="toggleAIPanel()" title="CoachIA"
+  style="position:fixed;bottom:80px;right:16px;width:48px;height:48px;border-radius:50%;
+         background:linear-gradient(135deg,var(--accent-neon),var(--accent-purple));
+         color:white;font-size:20px;border:none;cursor:pointer;z-index:95;
+         box-shadow:0 4px 20px rgba(0,229,255,0.4);
+         display:flex;align-items:center;justify-content:center;
+         transition:transform 0.2s,box-shadow 0.2s">🤖</button>
+
 <!-- ═══════ TOASTS ═══════ -->
 <div id="toast-container" class="toast-container"></div>
 
@@ -530,8 +548,30 @@
 <div class="modal-overlay" id="modal-add-custom-exercise">
   <div class="modal">
     <div class="modal-header"><div class="modal-title">Créer un exercice</div><button class="modal-close" onclick="closeModal('modal-add-custom-exercise')">✕</button></div>
-    <div class="form-group"><label class="form-label">Nom de l'exercice</label><input type="text" id="custom-ex-name" class="form-input" placeholder="Ex: Trap Bar Deadlift, Leg press incliné..."></div>
-    <div class="form-group"><label class="form-label">Groupe musculaire</label><input type="text" id="custom-ex-muscle" class="form-input" placeholder="Ex: Dos, Quadriceps, Pectoraux..."></div>
+    <div class="form-group">
+      <label class="form-label">Nom de l'exercice</label>
+      <input type="text" id="custom-ex-name" class="form-input" placeholder="Ex: Trap Bar Deadlift, Leg press incliné...">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Groupe(s) musculaire(s)
+        <span class="text-muted" style="font-size:10px;font-weight:normal;margin-left:4px">Sélection multiple possible</span>
+      </label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:8px" id="custom-ex-muscles-grid">
+        <label style="display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:4px;cursor:pointer;font-size:13px;background:var(--bg-3);border:1px solid var(--border)"><input type="checkbox" name="custom-ex-muscles" value="Pectoraux" style="accent-color:var(--accent-fire)"> Pectoraux</label>
+        <label style="display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:4px;cursor:pointer;font-size:13px;background:var(--bg-3);border:1px solid var(--border)"><input type="checkbox" name="custom-ex-muscles" value="Dos" style="accent-color:var(--accent-fire)"> Dos</label>
+        <label style="display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:4px;cursor:pointer;font-size:13px;background:var(--bg-3);border:1px solid var(--border)"><input type="checkbox" name="custom-ex-muscles" value="Épaules" style="accent-color:var(--accent-fire)"> Épaules</label>
+        <label style="display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:4px;cursor:pointer;font-size:13px;background:var(--bg-3);border:1px solid var(--border)"><input type="checkbox" name="custom-ex-muscles" value="Biceps" style="accent-color:var(--accent-fire)"> Biceps</label>
+        <label style="display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:4px;cursor:pointer;font-size:13px;background:var(--bg-3);border:1px solid var(--border)"><input type="checkbox" name="custom-ex-muscles" value="Triceps" style="accent-color:var(--accent-fire)"> Triceps</label>
+        <label style="display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:4px;cursor:pointer;font-size:13px;background:var(--bg-3);border:1px solid var(--border)"><input type="checkbox" name="custom-ex-muscles" value="Quadriceps" style="accent-color:var(--accent-fire)"> Quadriceps</label>
+        <label style="display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:4px;cursor:pointer;font-size:13px;background:var(--bg-3);border:1px solid var(--border)"><input type="checkbox" name="custom-ex-muscles" value="Ischio-jambiers" style="accent-color:var(--accent-fire)"> Ischio-jambiers</label>
+        <label style="display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:4px;cursor:pointer;font-size:13px;background:var(--bg-3);border:1px solid var(--border)"><input type="checkbox" name="custom-ex-muscles" value="Mollets" style="accent-color:var(--accent-fire)"> Mollets</label>
+        <label style="display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:4px;cursor:pointer;font-size:13px;background:var(--bg-3);border:1px solid var(--border)"><input type="checkbox" name="custom-ex-muscles" value="Fessiers" style="accent-color:var(--accent-fire)"> Fessiers</label>
+        <label style="display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:4px;cursor:pointer;font-size:13px;background:var(--bg-3);border:1px solid var(--border)"><input type="checkbox" name="custom-ex-muscles" value="Abdominaux" style="accent-color:var(--accent-fire)"> Abdominaux</label>
+        <label style="display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:4px;cursor:pointer;font-size:13px;background:var(--bg-3);border:1px solid var(--border)"><input type="checkbox" name="custom-ex-muscles" value="Trapèzes" style="accent-color:var(--accent-fire)"> Trapèzes</label>
+        <label style="display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:4px;cursor:pointer;font-size:13px;background:var(--bg-3);border:1px solid var(--border)"><input type="checkbox" name="custom-ex-muscles" value="Lombaires" style="accent-color:var(--accent-fire)"> Lombaires</label>
+      </div>
+      <input type="text" id="custom-ex-muscle-other" class="form-input" placeholder="Autre groupe non listé (optionnel)" style="font-size:12px">
+    </div>
     <div class="form-group"><label class="form-label">Type</label>
       <select id="custom-ex-type" class="form-select">
         <option value="compound">Poly-articulaire (compound)</option>
@@ -541,7 +581,7 @@
       </select>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-add-custom-exercise')">Annuler</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-custom-exercise');resetCustomExForm()">Annuler</button>
       <button class="btn btn-primary" onclick="addCustomExercise()">✅ Ajouter</button>
     </div>
   </div>
@@ -1240,6 +1280,45 @@ function checkPR(exerciseId, weight, reps) {
   return weight>maxW || (weight*reps)>maxV;
 }
 
+
+// ── Normalisation des groupes musculaires ──
+const MUSCLE_ALIASES = {
+  'pec': 'Pectoraux', 'pecs': 'Pectoraux', 'poitrine': 'Pectoraux', 'chest': 'Pectoraux', 'pectoraux': 'Pectoraux',
+  'dos': 'Dos', 'back': 'Dos', 'rachis': 'Dos',
+  'epaules': 'Épaules', 'épaules': 'Épaules', 'deltoïdes': 'Épaules', 'delts': 'Épaules', 'shoulders': 'Épaules',
+  'biceps': 'Biceps', 'bi': 'Biceps',
+  'triceps': 'Triceps', 'tri': 'Triceps',
+  'quadriceps': 'Quadriceps', 'quads': 'Quadriceps', 'cuisse': 'Quadriceps', 'cuisses': 'Quadriceps', 'legs': 'Quadriceps',
+  'ischio': 'Ischio-jambiers', 'ischio-jambiers': 'Ischio-jambiers', 'ischios': 'Ischio-jambiers', 'hamstrings': 'Ischio-jambiers',
+  'mollets': 'Mollets', 'calves': 'Mollets',
+  'abdominaux': 'Abdominaux', 'abs': 'Abdominaux', 'abdos': 'Abdominaux', 'core': 'Abdominaux',
+  'fessiers': 'Fessiers', 'glutes': 'Fessiers', 'fessier': 'Fessiers',
+  'trapèzes': 'Trapèzes', 'traps': 'Trapèzes', 'trapeze': 'Trapèzes',
+  'lombaires': 'Lombaires', 'lower back': 'Lombaires',
+};
+
+function normalizeMuscle(raw) {
+  if(!raw) return 'Général';
+  const key = raw.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  const normalized = key.replace(/[éè]/g,'e').replace(/[àâ]/g,'a').replace(/[ùû]/g,'u');
+  // Cherche dans les alias
+  for(const [alias, canonical] of Object.entries(MUSCLE_ALIASES)) {
+    const aliasNorm = alias.normalize('NFD').replace(/[̀-ͯ]/g,'');
+    if(normalized === aliasNorm || key === alias) return canonical;
+  }
+  // Capitaliser la première lettre si pas trouvé
+  return raw.trim().charAt(0).toUpperCase() + raw.trim().slice(1);
+}
+
+function fixLibraryMuscleNames() {
+  let changed = false;
+  (state.exercises_library || []).forEach(ex => {
+    const fixed = normalizeMuscle(ex.muscle);
+    if(fixed !== ex.muscle) { ex.muscle = fixed; changed = true; }
+  });
+  if(changed) saveState();
+}
+
 const MUSCLE_COLORS = {
   'Pectoraux':'#ff4d1c','Dos':'#00e5ff','Épaules':'#ffd166',
   'Biceps':'#06d6a0','Triceps':'#9b5de5','Quadriceps':'#f72585',
@@ -1307,15 +1386,21 @@ function createDoughnutChart(id, labels, data, colors) {
 
 // ── AI Panel avec historique persistant ──
 let currentSessionId = null;
+let _pendingWorkoutImport = null; // Séance en attente d'import depuis CoachIA
 let aiHistory = []; // session courante en mémoire
 
 function toggleAIPanel() {
   const panel = document.getElementById('ai-panel');
-  const btn = document.getElementById('ai-toggle-btn');
   if (!panel) return;
   const isOpen = panel.classList.toggle('open');
-  btn.classList.toggle('open', isOpen);
-  btn.textContent = isOpen ? '✕' : '🤖';
+  // Mettre à jour le bouton FAB
+  const fab = document.getElementById('ai-fab-btn');
+  if(fab) {
+    fab.textContent = isOpen ? '✕' : '🤖';
+    fab.style.background = isOpen
+      ? 'linear-gradient(135deg,var(--accent-fire),var(--accent-gold))'
+      : 'linear-gradient(135deg,var(--accent-neon),var(--accent-purple))';
+  }
   if (isOpen) {
     if (!currentSessionId) startNewChatSession();
     renderChatHistoryList();
@@ -1431,12 +1516,21 @@ async function sendAIMessage() {
       const confirmMsg = '📋 J\'ai détecté une séance dans ton message. Veux-tu que je l\'enregistre dans ton historique ?';
       _renderMessage('coach', confirmMsg);
       _saveMessageToSession('assistant', confirmMsg);
-      // Bouton d'action inline
+      // Stocker dans variable globale — évite l'échappement JSON dans onclick
+      _pendingWorkoutImport = parsedWorkout;
       const container = document.getElementById('ai-messages');
       const actionDiv = document.createElement('div');
       actionDiv.style.cssText = 'padding:8px 12px 12px 44px;display:flex;gap:8px';
-      actionDiv.innerHTML = '<button class="btn btn-primary btn-sm" onclick="saveDetectedWorkout(' + JSON.stringify(JSON.stringify(parsedWorkout)) + ',this.parentElement)">✅ Oui, enregistrer</button>'
-        + '<button class="btn btn-ghost btn-sm" onclick="this.parentElement.remove()">Non merci</button>';
+      const btnSave = document.createElement('button');
+      btnSave.className = 'btn btn-primary btn-sm';
+      btnSave.textContent = '✅ Oui, enregistrer';
+      btnSave.onclick = function() { saveDetectedWorkout(actionDiv); };
+      const btnNo = document.createElement('button');
+      btnNo.className = 'btn btn-ghost btn-sm';
+      btnNo.textContent = 'Non merci';
+      btnNo.onclick = function() { actionDiv.remove(); _pendingWorkoutImport = null; };
+      actionDiv.appendChild(btnSave);
+      actionDiv.appendChild(btnNo);
       container.appendChild(actionDiv);
       container.scrollTop = container.scrollHeight;
     }, 300);
@@ -1445,48 +1539,79 @@ async function sendAIMessage() {
   renderChatHistoryList();
 }
 
-function saveDetectedWorkout(jsonStr, btnContainer) {
+function saveDetectedWorkout(btnContainer) {
+  const data = _pendingWorkoutImport;
+  _pendingWorkoutImport = null;
+
+  if(!data || !data.detected) {
+    showToast('❌ Aucune séance à enregistrer', 'error');
+    return;
+  }
+
   try {
-    const data = JSON.parse(jsonStr);
-    if(!data.detected) return;
     const tod = data.date || today();
 
     if(data.type === 'course' && data.runs) {
+      // Enregistrement course
       const r = data.runs;
       state.runs.push({
         id: generateId(), date: tod, type: 'Course (CoachIA)',
-        distance: r.distance, duration: data.duration,
-        time: r.time, pace: r.pace, notes: r.notes || 'Importé via CoachIA'
+        distance: r.distance || null,
+        duration: data.duration || null,
+        time: r.time || null,
+        pace: r.pace || null,
+        notes: r.notes || 'Importé via CoachIA'
       });
-      saveState(); renderRunHistory();
-      showToast('🏃 Course enregistrée depuis le chat !', 'success');
-    } else if(data.exercises?.length) {
+      addXP(10);
+      updateStreak();
+      saveState();
+      renderRunHistory();
+      showToast('🏃 Course enregistrée !', 'success');
+
+    } else {
+      // Enregistrement séance musculation (défaut)
+      const exercises = (data.exercises || []).map(ex => ({
+        exerciseId: generateId(),
+        name: ex.name || 'Exercice',
+        muscle: ex.muscle || 'Général',
+        sets: (ex.sets || [{ reps: '', weight: '', rest: 90 }]).map(s => ({
+          reps: String(s.reps || ''),
+          weight: String(s.weight || ''),
+          rest: parseInt(s.rest) || 90
+        }))
+      }));
+
+      const totalVol = exercises.reduce((s, ex) => s + calcVolume(ex.sets), 0);
+
       const w = {
-        id: generateId(), date: tod, title: data.title || 'Séance (CoachIA)',
-        trainingType: data.trainingType || 'général', duration: data.duration || 0,
-        items: data.exercises.map(ex => ({
-          type: 'exercise', exerciseId: generateId(),
-          name: ex.name, muscle: ex.muscle || 'Général',
-          sets: ex.sets || [{reps:'',weight:'',rest:90}]
-        })),
-        exercises: data.exercises.map(ex => ({
-          exerciseId: generateId(), name: ex.name, muscle: ex.muscle || 'Général',
-          sets: ex.sets || [{reps:'',weight:'',rest:90}]
-        })),
-        totalVolume: data.exercises.reduce((s,ex) => s + calcVolume(ex.sets||[]), 0),
+        id: generateId(),
+        date: tod,
+        title: data.title || 'Séance importée (CoachIA)',
+        trainingType: data.trainingType || 'général',
+        duration: data.duration || 0,
+        totalVolume: totalVol,
+        items: exercises.map(ex => ({ type: 'exercise', ...ex })),
+        exercises: exercises,
         notes: 'Importé via CoachIA'
       };
+
       state.workouts.push(w);
-      saveState(); renderWorkoutHistory();
-      showToast('🏋️ Séance enregistrée depuis le chat !', 'success');
+      addXP(30 + exercises.length * 3);
+      updateStreak();
+      checkAchievements();
+      saveState();
+      renderWorkoutHistory();
+      showToast('🏋️ Séance enregistrée dans Musculation !', 'success');
     }
 
     if(btnContainer) {
-      btnContainer.innerHTML = '<span style="font-size:12px;color:var(--accent-green);padding:4px 12px">✅ Séance enregistrée !</span>';
-      setTimeout(() => btnContainer.remove(), 2000);
+      btnContainer.innerHTML = '<span style="font-size:12px;color:var(--accent-green);padding:4px 12px">✅ Enregistré ! Visible dans l\'historique.</span>';
+      setTimeout(() => btnContainer.remove(), 3000);
     }
   } catch(e) {
-    showToast('❌ Impossible d\'analyser la séance', 'error');
+    console.error('saveDetectedWorkout error:', e);
+    showToast('❌ Erreur lors de l\'enregistrement : ' + e.message, 'error');
+    if(btnContainer) btnContainer.remove();
   }
 }
 
@@ -2618,15 +2743,38 @@ function renderExerciseSelector(searchQuery='') {
 
 function addCustomExercise() {
   const name = document.getElementById('custom-ex-name')?.value?.trim();
-  const muscle = document.getElementById('custom-ex-muscle')?.value?.trim();
   const type = document.getElementById('custom-ex-type')?.value||'compound';
-  if(!name||!muscle){ showToast('⚠️ Nom et groupe musculaire requis','error'); return; }
-  const ex = { id:generateId(), name, muscle, type, custom:true };
+
+  // Récupérer les checkboxes cochées
+  const checked = [...document.querySelectorAll('input[name="custom-ex-muscles"]:checked')]
+    .map(cb => cb.value);
+  // + champ texte libre
+  const other = (document.getElementById('custom-ex-muscle-other')?.value||'').trim();
+  if(other) checked.push(normalizeMuscle(other));
+
+  if(!name){ showToast('⚠️ Nom de l\'exercice requis','error'); return; }
+  if(!checked.length){ showToast('⚠️ Sélectionnez au moins un groupe musculaire','error'); return; }
+
+  // Pour les exercices poly-articulaires, on stocke tous les muscles séparés par " / "
+  // Le premier est le muscle "principal" affiché dans le badge
+  const muscle = checked.join(' / ');
+  const muscles = checked; // tableau complet pour les filtres
+
+  const ex = { id:generateId(), name, muscle, muscles, type, custom:true };
   state.exercises_library.push(ex);
   saveState();
+  resetCustomExForm();
   closeModal('modal-add-custom-exercise');
-  showToast(`✅ "${name}" ajouté au catalogue`,'success');
+  showToast('✅ "' + name + '" ajouté au catalogue', 'success');
   renderExerciseSelector();
+}
+
+function resetCustomExForm() {
+  const nameEl = document.getElementById('custom-ex-name');
+  if(nameEl) nameEl.value = '';
+  const otherEl = document.getElementById('custom-ex-muscle-other');
+  if(otherEl) otherEl.value = '';
+  document.querySelectorAll('input[name="custom-ex-muscles"]').forEach(cb => cb.checked = false);
 }
 
 async function generateAIWorkout() {
