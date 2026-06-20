@@ -521,7 +521,8 @@
     <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
       <button class="btn btn-secondary" onclick="openModal('modal-add-exercise');renderExerciseSelector()">+ Exercice</button>
       <button class="btn btn-secondary" onclick="openWODMenu()">⚡ WOD</button>
-      <button class="btn btn-secondary" style="border-color:rgba(0,229,255,0.3);color:var(--accent-neon)" onclick="openModal('modal-add-bloc')">🔁 Bloc/Circuit</button>
+      <button class="btn btn-secondary" style="border-color:rgba(155,93,229,0.3);color:var(--accent-purple)" onclick="openEmomMenu()">⏱️ EMOM</button>
+      <button class="btn btn-secondary" style="border-color:rgba(0,229,255,0.3);color:var(--accent-neon)" onclick="openBlocMenu()">🔁 Bloc/Circuit</button>
       <button class="btn btn-ghost btn-sm" onclick="saveCurrentAsTemplate()">💾 Sauver comme programme</button>
       <button class="btn btn-ghost btn-sm" onclick="openModal('modal-timer')">⏱️ Timer</button>
     </div>
@@ -622,6 +623,46 @@
   </div>
 </div>
 
+<!-- Add EMOM Modal -->
+<div class="modal-overlay" id="modal-add-emom">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header">
+      <div class="modal-title">⏱️ Créer un EMOM</div>
+      <button class="modal-close" onclick="closeModal('modal-add-emom')">✕</button>
+    </div>
+    <div style="background:rgba(155,93,229,0.06);border:1px solid rgba(155,93,229,0.2);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:16px;font-size:12px;color:var(--text-1);line-height:1.6">
+      EMOM = "Every Minute On the Minute". Définissez le nombre de minutes, puis ajoutez un ou plusieurs exercices à réaliser à chaque minute.
+    </div>
+    <div class="form-group">
+      <label class="form-label">Nom de l'EMOM</label>
+      <input type="text" id="emom-name" class="form-input" placeholder="Ex: EMOM 12 - Full body">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Durée totale (minutes)</label>
+      <input type="number" id="emom-minutes" class="form-input" value="10" min="1" max="60">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-emom')">Annuler</button>
+      <button class="btn btn-primary" onclick="createEmomInWorkout()">⏱️ Créer</button>
+    </div>
+  </div>
+</div>
+
+<!-- EMOM Library Modal -->
+<div class="modal-overlay" id="modal-emom-library">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-header">
+      <div class="modal-title">📚 Bibliothèque d'EMOM</div>
+      <button class="modal-close" onclick="closeModal('modal-emom-library')">✕</button>
+    </div>
+    <div id="emom-library-list" style="max-height:480px;overflow-y:auto"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-emom-library')">Fermer</button>
+      <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-emom-library');openModal('modal-add-emom')">✏️ Créer un nouvel EMOM</button>
+    </div>
+  </div>
+</div>
+
 <!-- WOD Library Modal -->
 <div class="modal-overlay" id="modal-wod-library">
   <div class="modal" style="max-width:560px">
@@ -663,6 +704,21 @@
   </div>
 </div>
 
+<!-- Bloc Library Modal -->
+<div class="modal-overlay" id="modal-bloc-library">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-header">
+      <div class="modal-title">📚 Bibliothèque de blocs</div>
+      <button class="modal-close" onclick="closeModal('modal-bloc-library')">✕</button>
+    </div>
+    <div id="bloc-library-list" style="max-height:480px;overflow-y:auto"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-bloc-library')">Fermer</button>
+      <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-bloc-library');openModal('modal-add-bloc')">✏️ Créer un nouveau bloc</button>
+    </div>
+  </div>
+</div>
+
 <!-- Workout Detail Modal -->
 <div class="modal-overlay" id="modal-workout-detail">
   <div class="modal" style="max-width:600px">
@@ -697,19 +753,72 @@
 
 <!-- Timer Modal -->
 <div class="modal-overlay" id="modal-timer">
-  <div class="modal" style="max-width:360px;text-align:center">
-    <div class="modal-header"><div class="modal-title">⏱️ Timer de repos</div><button class="modal-close" onclick="closeModal('modal-timer')">✕</button></div>
-    <div class="timer-display" id="timer-display">00:00</div>
-    <div style="display:flex;gap:8px;justify-content:center;margin:16px 0;flex-wrap:wrap">
-      <button class="btn btn-secondary btn-sm" onclick="startTimer(30)">30s</button>
-      <button class="btn btn-secondary btn-sm" onclick="startTimer(60)">1 min</button>
-      <button class="btn btn-secondary btn-sm" onclick="startTimer(90)">1:30</button>
-      <button class="btn btn-secondary btn-sm" onclick="startTimer(120)">2 min</button>
-      <button class="btn btn-secondary btn-sm" onclick="startTimer(180)">3 min</button>
+  <div class="modal" style="max-width:400px;text-align:center">
+    <div class="modal-header"><div class="modal-title">⏱️ Timer</div><button class="modal-close" onclick="closeModal('modal-timer')">✕</button></div>
+
+    <div class="tabs" style="margin-bottom:16px">
+      <div class="tab active" data-group="timer" data-tab="simple" onclick="switchTab(this)">Simple</div>
+      <div class="tab" data-group="timer" data-tab="tabata" onclick="switchTab(this)">Tabata</div>
     </div>
-    <div style="display:flex;gap:8px;justify-content:center">
-      <button class="btn btn-primary" onclick="pauseTimer()">⏸ Pause/Play</button>
-      <button class="btn btn-ghost" onclick="stopTimer()">⏹ Stop</button>
+
+    <!-- Onglet Simple -->
+    <div class="tab-content active" data-group="timer" data-tab="simple">
+      <div class="timer-display" id="timer-display">00:00</div>
+      <div id="tabata-status" style="display:none;font-size:13px;color:var(--accent-gold);font-weight:600;margin-top:-8px;margin-bottom:8px"></div>
+
+      <div style="display:flex;gap:8px;justify-content:center;margin:16px 0;flex-wrap:wrap">
+        <button class="btn btn-secondary btn-sm" onclick="startTimer(30)">30s</button>
+        <button class="btn btn-secondary btn-sm" onclick="startTimer(60)">1 min</button>
+        <button class="btn btn-secondary btn-sm" onclick="startTimer(90)">1:30</button>
+        <button class="btn btn-secondary btn-sm" onclick="startTimer(120)">2 min</button>
+        <button class="btn btn-secondary btn-sm" onclick="startTimer(180)">3 min</button>
+      </div>
+
+      <!-- Temps personnalisé -->
+      <div style="display:flex;gap:6px;align-items:center;justify-content:center;margin-bottom:16px">
+        <input type="number" id="custom-timer-min" placeholder="min" min="0" max="60"
+          style="width:60px;background:var(--bg-3);border:1px solid var(--border);border-radius:6px;padding:8px;color:var(--text-0);text-align:center">
+        <span style="color:var(--text-2)">:</span>
+        <input type="number" id="custom-timer-sec" placeholder="sec" min="0" max="59"
+          style="width:60px;background:var(--bg-3);border:1px solid var(--border);border-radius:6px;padding:8px;color:var(--text-0);text-align:center">
+        <button class="btn btn-neon btn-sm" onclick="startCustomTimer()">▶ Lancer</button>
+      </div>
+
+      <div style="display:flex;gap:8px;justify-content:center">
+        <button class="btn btn-primary" onclick="pauseTimer()">⏸ Pause/Play</button>
+        <button class="btn btn-ghost" onclick="stopTimer()">⏹ Stop</button>
+      </div>
+    </div>
+
+    <!-- Onglet Tabata -->
+    <div class="tab-content" data-group="timer" data-tab="tabata">
+      <div id="tabata-setup">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Temps actif (s)</label>
+            <input type="number" id="tabata-work" class="form-input" value="20" min="1" max="600">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Temps repos (s)</label>
+            <input type="number" id="tabata-rest" class="form-input" value="10" min="0" max="600">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nombre de tours</label>
+          <input type="number" id="tabata-rounds" class="form-input" value="8" min="1" max="50">
+        </div>
+        <button class="btn btn-primary w-full mt-8" onclick="startTabata()">⚡ Démarrer le Tabata</button>
+      </div>
+
+      <div id="tabata-running" style="display:none">
+        <div id="tabata-status-2" style="font-size:14px;font-weight:700;margin-bottom:4px"></div>
+        <div class="timer-display" id="tabata-display" style="font-size:64px">00:00</div>
+        <div id="tabata-round-counter" style="font-size:13px;color:var(--text-2);margin-top:-4px;margin-bottom:16px"></div>
+        <div style="display:flex;gap:8px;justify-content:center">
+          <button class="btn btn-primary" onclick="pauseTabata()">⏸ Pause/Play</button>
+          <button class="btn btn-ghost" onclick="stopTabata()">⏹ Arrêter</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -718,6 +827,20 @@
 <div class="modal-overlay" id="modal-run">
   <div class="modal">
     <div class="modal-header"><div class="modal-title">🏃 Course à pied</div><button class="modal-close" onclick="closeModal('modal-run')">✕</button></div>
+
+    <!-- Import Coros -->
+    <div style="background:rgba(0,229,255,0.05);border:1px solid rgba(0,229,255,0.2);border-radius:var(--radius-sm);padding:12px;margin-bottom:16px">
+      <div class="form-label mb-6">🔗 Importer depuis Coros</div>
+      <div style="display:flex;gap:6px;margin-bottom:8px">
+        <input type="text" id="coros-link" class="form-input" placeholder="Collez le lien de partage Coros..." style="flex:1;font-size:12px">
+        <button class="btn btn-neon btn-sm" onclick="openCorosLink()" title="Ouvrir le lien">🔗</button>
+      </div>
+      <div class="text-muted text-sm mb-8">Ouvrez le lien, copiez le résumé de la séance, puis collez-le ci-dessous :</div>
+      <textarea id="coros-paste-data" class="form-textarea" rows="3" placeholder="Collez ici le texte du résumé Coros (distance, temps, FC, etc.)"></textarea>
+      <button class="btn btn-neon btn-sm w-full mt-8" id="btn-coros-extract" onclick="extractCorosData()">🤖 Extraire les données automatiquement</button>
+      <div id="coros-extract-result" style="display:none;margin-top:8px;font-size:12px;color:var(--accent-green)"></div>
+    </div>
+
     <div class="form-group"><label class="form-label">Type de séance</label>
       <select id="run-type" class="form-select" onchange="toggleIntervalFields()">
         <option value="Endurance fondamentale">Endurance fondamentale</option>
@@ -1063,6 +1186,8 @@ function defaultState() {
     steps: [],
     chatConversations: [],  // historique des conversations CoachIA
     wod_library: [],          // WODs sauvegardés réutilisables
+    bloc_library: [],         // Blocs/circuits sauvegardés réutilisables
+    emom_library: [],         // EMOM sauvegardés réutilisables
   };
 }
 
@@ -1727,6 +1852,100 @@ function renderTimerDisplay() {
   el.className = `timer-display ${timerRunning?'running':timerSeconds>0?'paused':''}`;
 }
 
+function startCustomTimer() {
+  const min = parseInt(document.getElementById('custom-timer-min')?.value) || 0;
+  const sec = parseInt(document.getElementById('custom-timer-sec')?.value) || 0;
+  const total = min * 60 + sec;
+  if(total <= 0) { showToast('⚠️ Entrez une durée valide', 'error'); return; }
+  startTimer(total);
+}
+
+// ── TABATA ──
+let tabataInterval = null;
+let tabataState = { phase: 'idle', secondsLeft: 0, currentRound: 0, totalRounds: 0, workTime: 20, restTime: 10, running: false };
+
+function startTabata() {
+  const work = parseInt(document.getElementById('tabata-work')?.value) || 20;
+  const rest = parseInt(document.getElementById('tabata-rest')?.value) || 10;
+  const rounds = parseInt(document.getElementById('tabata-rounds')?.value) || 8;
+
+  tabataState = { phase: 'work', secondsLeft: work, currentRound: 1, totalRounds: rounds, workTime: work, restTime: rest, running: true };
+
+  document.getElementById('tabata-setup').style.display = 'none';
+  document.getElementById('tabata-running').style.display = 'block';
+
+  _playTimerBeep();
+  renderTabataDisplay();
+  clearInterval(tabataInterval);
+  tabataInterval = setInterval(_tickTabata, 1000);
+}
+
+function _tickTabata() {
+  if(!tabataState.running) return;
+  tabataState.secondsLeft--;
+
+  if(tabataState.secondsLeft < 0) {
+    // Transition de phase
+    if(tabataState.phase === 'work') {
+      if(tabataState.restTime > 0) {
+        tabataState.phase = 'rest';
+        tabataState.secondsLeft = tabataState.restTime;
+        _playTimerBeep();
+        if(navigator.vibrate) navigator.vibrate(200);
+      } else {
+        _advanceTabataRound();
+      }
+    } else {
+      _advanceTabataRound();
+    }
+  }
+  renderTabataDisplay();
+}
+
+function _advanceTabataRound() {
+  if(tabataState.currentRound >= tabataState.totalRounds) {
+    // Terminé
+    stopTabata();
+    _playTimerBeep();
+    if(navigator.vibrate) navigator.vibrate([200,100,200,100,200,100,400]);
+    showToast('🎉 Tabata terminé ! ' + tabataState.totalRounds + ' tours complétés', 'success');
+    return;
+  }
+  tabataState.currentRound++;
+  tabataState.phase = 'work';
+  tabataState.secondsLeft = tabataState.workTime;
+  _playTimerBeep();
+  if(navigator.vibrate) navigator.vibrate(300);
+}
+
+function renderTabataDisplay() {
+  const display = document.getElementById('tabata-display');
+  const status = document.getElementById('tabata-status-2');
+  const counter = document.getElementById('tabata-round-counter');
+  if(display) {
+    display.textContent = timeStr(Math.max(0, tabataState.secondsLeft));
+    display.style.color = tabataState.phase === 'work' ? 'var(--accent-fire)' : 'var(--accent-neon)';
+  }
+  if(status) {
+    status.textContent = tabataState.phase === 'work' ? '🔥 ACTIF' : '😮‍💨 REPOS';
+    status.style.color = tabataState.phase === 'work' ? 'var(--accent-fire)' : 'var(--accent-neon)';
+  }
+  if(counter) {
+    counter.textContent = 'Tour ' + tabataState.currentRound + ' / ' + tabataState.totalRounds;
+  }
+}
+
+function pauseTabata() {
+  tabataState.running = !tabataState.running;
+}
+
+function stopTabata() {
+  clearInterval(tabataInterval);
+  tabataState = { phase: 'idle', secondsLeft: 0, currentRound: 0, totalRounds: 0, workTime: 20, restTime: 10, running: false };
+  document.getElementById('tabata-setup').style.display = 'block';
+  document.getElementById('tabata-running').style.display = 'none';
+}
+
 // ── Mobile sheet ──
 function openMoreSheet() { document.getElementById('more-sheet').classList.add('open'); document.getElementById('more-overlay').classList.add('open'); }
 function closeMoreSheet() { document.getElementById('more-sheet').classList.remove('open'); document.getElementById('more-overlay').classList.remove('open'); }
@@ -1937,6 +2156,19 @@ const AI = {
     const system = 'Tu es un assistant de fitness expert. Tu analyses du texte décrivant une séance de sport et tu extrais les données structurées. Réponds UNIQUEMENT avec du JSON valide, sans texte autour, sans markdown.';
     const user = 'Analyse ce texte décrivant une séance de sport et extrais les données :\n' + text
       + '\n\nRetourne ce JSON exact :\n{"detected": true, "title": "...", "date": "YYYY-MM-DD ou null", "type": "musculation|course|combat|natation", "duration": null, "trainingType": "hypertrophie|force|endurance|général", "exercises": [{"name": "...", "muscle": "...", "sets": [{"reps": "...", "weight": "...", "rest": 0}]}], "runs": {"distance": null, "time": "MM:SS", "pace": null, "notes": "..."}}\nSi ce n\'est pas une séance sportive, retourne {"detected": false}';
+    const resp = await this._call(system, user);
+    try {
+      const json = resp.match(/\{[\s\S]*\}/)?.[0];
+      return json ? JSON.parse(json) : { detected: false };
+    } catch { return { detected: false }; }
+  },
+
+  async parseCorosText(text) {
+    const system = 'Tu extrais des données de course à pied depuis un texte copié d\'une montre/app Coros, Garmin, Strava, etc. Réponds UNIQUEMENT en JSON valide, sans texte autour, sans markdown.';
+    const user = 'Extrais les données de cette séance de course :\n' + text
+      + '\n\nRetourne ce JSON exact (mets null si non trouvé) :\n'
+      + '{"detected": true, "type": "Endurance fondamentale|Fractionné|Tempo|Sortie longue", "distance": null, "timeMin": null, "timeSec": null, "paceMin": null, "paceSec": null, "hrAvg": null, "hrMax": null, "calories": null, "elevUp": null, "elevDown": null, "power": null, "cadence": null, "trainingLoad": null, "aerobicEff": null, "anaerobicEff": null}\n'
+      + 'Si aucune donnée de course n\'est trouvée, retourne {"detected": false}';
     const resp = await this._call(system, user);
     try {
       const json = resp.match(/\{[\s\S]*\}/)?.[0];
@@ -2335,24 +2567,31 @@ function renderActiveWorkout() {
   container.innerHTML = items.map((item, ii) => {
     if(item.type === 'bloc') return renderBlocItem(item, ii);
     if(item.type === 'wod')  return renderWodItem(item, ii);
+    if(item.type === 'emom') return renderEmomItem(item, ii);
     return renderExerciseItem(item, ii);
   }).join('');
 }
 
 function renderExerciseItem(ex, ii) {
+  if(!ex.unit) ex.unit = 'reps';
+  const unitLabel = ex.unit === 'secondes' ? 'Sec' : 'Reps';
   return `<div class="exercise-entry" style="border-left:3px solid var(--accent-fire)">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
       <span style="font-weight:600;font-size:14px">${ex.name}</span>
       <span class="badge badge-fire">${ex.muscle}</span>
+      <select onchange="updateItemUnit(${ii},this.value)" style="background:var(--bg-4);border:1px solid var(--border);border-radius:4px;padding:2px 6px;color:var(--text-1);font-size:11px">
+        <option value="reps" ${ex.unit==='reps'?'selected':''}>Reps</option>
+        <option value="secondes" ${ex.unit==='secondes'?'selected':''}>Secondes</option>
+      </select>
       <button onclick="removeItem(${ii})" style="margin-left:auto;color:var(--text-3);font-size:18px">×</button>
     </div>
     <div style="display:grid;grid-template-columns:28px 1fr 1fr 1fr 22px;gap:4px;margin-bottom:4px;font-size:10px;color:var(--text-2);text-align:center">
-      <span>#</span><span>Reps</span><span>Kg</span><span>Repos s</span><span></span>
+      <span>#</span><span>${unitLabel}</span><span>Kg</span><span>Repos s</span><span></span>
     </div>
     ${(ex.sets||[]).map((s,si)=>`
       <div style="display:grid;grid-template-columns:28px 1fr 1fr 1fr 22px;gap:4px;margin-bottom:3px;align-items:center">
         <span style="text-align:center;font-size:11px;color:var(--text-2)">${si+1}</span>
-        <input class="set-input" type="text" placeholder="reps" value="${s.reps||''}" onchange="updateItemSet(${ii},${si},'reps',this.value)">
+        <input class="set-input" type="text" placeholder="${ex.unit==='secondes'?'sec':'reps'}" value="${s.reps||''}" onchange="updateItemSet(${ii},${si},'reps',this.value)">
         <input class="set-input" type="number" placeholder="kg" value="${s.weight||''}" step="0.5" onchange="updateItemSet(${ii},${si},'weight',this.value)">
         <input class="set-input" type="number" placeholder="s" value="${s.rest||90}" onchange="updateItemSet(${ii},${si},'rest',this.value)">
         <button onclick="removeItemSet(${ii},${si})" style="color:var(--text-3);font-size:14px">×</button>
@@ -2362,6 +2601,11 @@ function renderExerciseItem(ex, ii) {
       <button class="btn btn-ghost btn-sm" onclick="startTimer(${ex.sets?.[ex.sets.length-1]?.rest||90})">⏱️</button>
     </div>
   </div>`;
+}
+
+function updateItemUnit(ii, val) {
+  const item = currentWorkout?.items?.[ii];
+  if(item) item.unit = val;
 }
 
 function renderBlocItem(bloc, ii) {
@@ -2380,10 +2624,14 @@ function renderBlocItem(bloc, ii) {
     </div>
     ${(bloc.exercises||[]).map((ex, ei) => `
       <div style="background:var(--bg-3);border-radius:6px;padding:8px 10px;margin-bottom:6px">
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap">
           <span style="font-size:12px;color:var(--text-2)">${ei+1}.</span>
           <span style="font-weight:600;font-size:13px">${ex.name}</span>
           <span class="badge badge-fire" style="font-size:10px">${ex.muscle}</span>
+          <select onchange="updateBlocExUnit(${ii},${ei},this.value)" style="background:var(--bg-4);border:1px solid var(--border);border-radius:4px;padding:1px 4px;color:var(--text-1);font-size:10px">
+            <option value="reps" ${(ex.unit||'reps')==='reps'?'selected':''}>Reps</option>
+            <option value="secondes" ${ex.unit==='secondes'?'selected':''}>Sec</option>
+          </select>
           <button onclick="removeBlocExercise(${ii},${ei})" style="margin-left:auto;color:var(--text-3);font-size:14px">×</button>
         </div>
         <div style="display:grid;grid-template-columns:28px 1fr 1fr 1fr 22px;gap:4px;font-size:10px;color:var(--text-2);text-align:center;margin-bottom:3px">
@@ -2392,15 +2640,19 @@ function renderBlocItem(bloc, ii) {
         ${(ex.sets||[]).map((s,si)=>`
           <div style="display:grid;grid-template-columns:28px 1fr 1fr 1fr 22px;gap:4px;margin-bottom:3px;align-items:center">
             <span style="text-align:center;font-size:11px;color:var(--text-2)">${si+1}</span>
-            <input class="set-input" type="text" placeholder="reps" value="${s.reps||''}" onchange="updateBlocExSet(${ii},${ei},${si},'reps',this.value)">
+            <input class="set-input" type="text" placeholder="${ex.unit==='secondes'?'sec':'reps'}" value="${s.reps||''}" onchange="updateBlocExSet(${ii},${ei},${si},'reps',this.value)">
             <input class="set-input" type="number" placeholder="kg" value="${s.weight||''}" step="0.5" onchange="updateBlocExSet(${ii},${ei},${si},'weight',this.value)">
             <input class="set-input" type="number" placeholder="s" value="${s.rest||60}" onchange="updateBlocExSet(${ii},${ei},${si},'rest',this.value)">
             <button onclick="removeBlocExSet(${ii},${ei},${si})" style="color:var(--text-3);font-size:13px">×</button>
           </div>`).join('')}
         <button class="btn btn-ghost btn-sm" style="margin-top:4px;font-size:11px" onclick="addBlocExSet(${ii},${ei})">+ Série</button>
       </div>`).join('')}
-    <button class="btn btn-ghost btn-sm" style="margin-top:4px;border-color:rgba(0,229,255,0.3);color:var(--accent-neon)"
-      onclick="openAddExToBloc(${ii})">+ Exercice dans le bloc</button>
+    <div style="display:flex;gap:6px;margin-top:4px">
+      <button class="btn btn-ghost btn-sm" style="border-color:rgba(0,229,255,0.3);color:var(--accent-neon)"
+        onclick="openAddExToBloc(${ii})">+ Exercice dans le bloc</button>
+      <button class="btn btn-ghost btn-sm" style="border-color:rgba(255,209,102,0.3);color:var(--accent-gold)"
+        onclick="saveBlocToLibrary(${ii})">📚 Sauvegarder ce bloc</button>
+    </div>
   </div>`;
 }
 
@@ -2449,6 +2701,164 @@ function renderWodItem(wod, ii) {
 function updateWodDesc(ii, val) {
   const item = currentWorkout?.items?.[ii];
   if(item && item.type === 'wod') item.description = val;
+}
+
+// ── EMOM ──
+function renderEmomItem(emom, ii) {
+  const minutes = emom.exercisesByMinute || [];
+  return `<div class="exercise-entry" style="border-left:3px solid var(--accent-purple)">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <span style="font-size:16px">⏱️</span>
+      <span style="font-weight:700;font-size:14px;color:var(--accent-purple)">${emom.name||'EMOM'}</span>
+      <span class="badge badge-purple">${minutes.length} min</span>
+      <button onclick="removeItem(${ii})" style="margin-left:auto;color:var(--text-3);font-size:18px">×</button>
+    </div>
+    ${minutes.map((min, mi) => `
+      <div style="background:var(--bg-3);border-radius:6px;padding:8px 10px;margin-bottom:6px">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+          <span class="badge badge-purple" style="font-size:10px">MIN ${mi+1}</span>
+          <button onclick="removeEmomMinuteExercise(${ii},${mi})" style="margin-left:auto;color:var(--text-3);font-size:13px">×</button>
+        </div>
+        ${(min.exercises||[]).map((ex, exi) => `
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;flex-wrap:wrap">
+            <span style="font-size:12px;flex:1;min-width:100px">${ex.name}</span>
+            <input type="text" value="${ex.amount||''}" placeholder="qté" class="set-input" style="width:50px;font-size:11px;padding:3px 6px"
+              onchange="updateEmomExAmount(${ii},${mi},${exi},this.value)">
+            <select onchange="updateEmomExUnit(${ii},${mi},${exi},this.value)" style="background:var(--bg-4);border:1px solid var(--border);border-radius:4px;padding:2px 4px;color:var(--text-1);font-size:10px">
+              <option value="reps" ${(ex.unit||'reps')==='reps'?'selected':''}>reps</option>
+              <option value="secondes" ${ex.unit==='secondes'?'selected':''}>sec</option>
+            </select>
+            <button onclick="removeEmomExercise(${ii},${mi},${exi})" style="color:var(--text-3);font-size:13px">×</button>
+          </div>`).join('')}
+        <button class="btn btn-ghost btn-sm" style="margin-top:2px;font-size:10px" onclick="openAddExToEmomMinute(${ii},${mi})">+ Exercice min ${mi+1}</button>
+      </div>`).join('')}
+    <div style="display:flex;gap:6px;margin-top:6px">
+      <button class="btn btn-ghost btn-sm" onclick="addEmomMinute(${ii})">+ Minute</button>
+      <button class="btn btn-ghost btn-sm" style="border-color:rgba(255,209,102,0.3);color:var(--accent-gold)" onclick="saveEmomToLibrary(${ii})">📚 Sauvegarder cet EMOM</button>
+    </div>
+  </div>`;
+}
+
+function addEmomMinute(ii) {
+  const emom = currentWorkout?.items?.[ii];
+  if(!emom) return;
+  if(!emom.exercisesByMinute) emom.exercisesByMinute = [];
+  emom.exercisesByMinute.push({ exercises: [] });
+  renderActiveWorkout();
+}
+
+function removeEmomMinuteExercise(ii, mi) {
+  const emom = currentWorkout?.items?.[ii];
+  emom?.exercisesByMinute?.splice(mi, 1);
+  renderActiveWorkout();
+}
+
+let _emomAddTarget = null; // {ii, mi}
+function openAddExToEmomMinute(ii, mi) {
+  _emomAddTarget = { ii, mi };
+  renderExerciseSelector();
+  openModal('modal-add-exercise');
+}
+
+function removeEmomExercise(ii, mi, exi) {
+  currentWorkout?.items?.[ii]?.exercisesByMinute?.[mi]?.exercises?.splice(exi, 1);
+  renderActiveWorkout();
+}
+
+function updateEmomExAmount(ii, mi, exi, val) {
+  const ex = currentWorkout?.items?.[ii]?.exercisesByMinute?.[mi]?.exercises?.[exi];
+  if(ex) ex.amount = val;
+}
+
+function updateEmomExUnit(ii, mi, exi, val) {
+  const ex = currentWorkout?.items?.[ii]?.exercisesByMinute?.[mi]?.exercises?.[exi];
+  if(ex) ex.unit = val;
+}
+
+function saveEmomToLibrary(ii) {
+  const emom = currentWorkout?.items?.[ii];
+  if(!emom || emom.type !== 'emom') return;
+  const hasContent = (emom.exercisesByMinute||[]).some(m => m.exercises?.length);
+  if(!hasContent) { showToast('⚠️ Ajoutez des exercices à au moins une minute', 'error'); return; }
+
+  if(!state.emom_library) state.emom_library = [];
+  const exists = state.emom_library.find(e => e.name.toLowerCase() === (emom.name||'').toLowerCase());
+  if(exists) { showToast('⚠️ Un EMOM "' + emom.name + '" existe déjà', 'error'); return; }
+
+  state.emom_library.push({
+    id: generateId(), name: emom.name || 'EMOM',
+    exercisesByMinute: JSON.parse(JSON.stringify(emom.exercisesByMinute || []))
+  });
+  saveState();
+  showToast('📚 EMOM sauvegardé dans la bibliothèque', 'success');
+}
+
+function addEmomFromLibrary(emomId) {
+  if(!currentWorkout){ showToast('⚠️ Démarrez une séance d\'abord','error'); return; }
+  const lib = (state.emom_library||[]).find(e => e.id === emomId);
+  if(!lib) return;
+  if(!currentWorkout.items) currentWorkout.items = [];
+  currentWorkout.items.push({
+    type: 'emom', id: generateId(), name: lib.name,
+    exercisesByMinute: JSON.parse(JSON.stringify(lib.exercisesByMinute || []))
+  });
+  closeModal('modal-emom-library');
+  renderActiveWorkout();
+  showToast('⏱️ EMOM "' + lib.name + '" ajouté à la séance', 'success');
+}
+
+function deleteEmomFromLibrary(emomId) {
+  if(!confirm('Supprimer cet EMOM de la bibliothèque ?')) return;
+  state.emom_library = (state.emom_library||[]).filter(e => e.id !== emomId);
+  saveState();
+  renderEmomLibrary();
+  showToast('🗑 EMOM supprimé', 'success');
+}
+
+function renderEmomLibrary() {
+  const el = document.getElementById('emom-library-list');
+  if(!el) return;
+  const emoms = state.emom_library || [];
+  if(!emoms.length) {
+    el.innerHTML = '<div class="text-muted text-sm" style="padding:16px;text-align:center">Aucun EMOM sauvegardé.<br>Créez un EMOM dans une séance puis cliquez "📚 Sauvegarder cet EMOM".</div>';
+    return;
+  }
+  el.innerHTML = emoms.map(e => {
+    const exList = (e.exercisesByMinute||[]).map((m,i) => 'Min'+(i+1)+': '+(m.exercises||[]).map(ex=>ex.name).join('+')).join(' · ');
+    return `<div class="exercise-entry" style="border-left:3px solid var(--accent-purple)">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span style="font-weight:700;color:var(--accent-purple)">⏱️ ${e.name}</span>
+        <span class="badge badge-purple">${(e.exercisesByMinute||[]).length} min</span>
+        <button onclick="addEmomFromLibrary('${e.id}')" class="btn btn-primary btn-sm" style="margin-left:auto">+ Ajouter</button>
+        <button onclick="deleteEmomFromLibrary('${e.id}')" class="btn btn-ghost btn-sm" style="color:var(--accent-fire)">🗑</button>
+      </div>
+      <div style="font-size:11px;color:var(--text-2)">${exList}</div>
+    </div>`;
+  }).join('');
+}
+
+function openEmomMenu() {
+  if((state.emom_library||[]).length > 0) {
+    renderEmomLibrary();
+    openModal('modal-emom-library');
+  } else {
+    openModal('modal-add-emom');
+  }
+}
+
+function createEmomInWorkout() {
+  if(!currentWorkout){ showToast('⚠️ Démarrez une séance d\'abord','error'); return; }
+  const name = document.getElementById('emom-name')?.value?.trim() || 'EMOM';
+  const numMinutes = parseInt(document.getElementById('emom-minutes')?.value) || 10;
+  if(!currentWorkout.items) currentWorkout.items = [];
+  currentWorkout.items.push({
+    type: 'emom', id: generateId(), name,
+    exercisesByMinute: Array.from({length: numMinutes}, () => ({ exercises: [] }))
+  });
+  document.getElementById('emom-name').value = '';
+  closeModal('modal-add-emom');
+  renderActiveWorkout();
+  showToast('⏱️ EMOM "' + name + '" créé (' + numMinutes + ' min) — ajoutez des exercices par minute', 'info');
 }
 
 // Ouvre la bibliothèque si elle a des WODs, sinon le formulaire de création
@@ -2511,6 +2921,11 @@ function updateBlocExSet(ii, ei, si, field, val) {
   if(s) s[field] = val;
 }
 
+function updateBlocExUnit(ii, ei, val) {
+  const ex = currentWorkout?.items[ii]?.exercises?.[ei];
+  if(ex) ex.unit = val;
+}
+
 function removeBlocExercise(ii, ei) {
   currentWorkout?.items[ii]?.exercises?.splice(ei,1);
   renderActiveWorkout();
@@ -2530,13 +2945,28 @@ function addExerciseToWorkout(exerciseId) {
   const lib = state.exercises_library.find(e=>e.id===exerciseId);
   if(!lib) return;
 
+  // Cas 1 : ajout dans une minute EMOM
+  if(_emomAddTarget !== null) {
+    const { ii, mi } = _emomAddTarget;
+    const emom = currentWorkout.items[ii];
+    if(emom && emom.type === 'emom' && emom.exercisesByMinute?.[mi]) {
+      emom.exercisesByMinute[mi].exercises.push({
+        exerciseId, name: lib.name, amount: '', unit: 'reps'
+      });
+    }
+    _emomAddTarget = null;
+    closeModal('modal-add-exercise');
+    renderActiveWorkout();
+    return;
+  }
+
+  // Cas 2 : ajout dans un bloc existant
   if(_addingToBlocIndex !== null) {
-    // Ajout dans un bloc existant
     const bloc = currentWorkout.items[_addingToBlocIndex];
     if(bloc && bloc.type === 'bloc') {
       const lastSets = getLastSetsForExercise(exerciseId);
       bloc.exercises.push({
-        exerciseId, name:lib.name, muscle:lib.muscle,
+        exerciseId, name:lib.name, muscle:lib.muscle, unit:'reps',
         sets: lastSets ? lastSets.map(s=>({reps:s.reps,weight:s.weight,rest:s.rest||60})) : [{reps:'',weight:'',rest:60}]
       });
     }
@@ -2546,11 +2976,11 @@ function addExerciseToWorkout(exerciseId) {
     return;
   }
 
-  // Ajout comme exercice standalone
+  // Cas 3 : ajout comme exercice standalone
   const lastSets = getLastSetsForExercise(exerciseId);
   if(!currentWorkout.items) currentWorkout.items = [];
   currentWorkout.items.push({
-    type:'exercise', exerciseId, name:lib.name, muscle:lib.muscle,
+    type:'exercise', exerciseId, name:lib.name, muscle:lib.muscle, unit:'reps',
     sets: lastSets ? lastSets.map(s=>({reps:s.reps,weight:s.weight,rest:s.rest||90})) : [{reps:'',weight:'',rest:90}]
   });
   renderActiveWorkout();
@@ -2566,6 +2996,87 @@ function addBlocToWorkout() {
   closeModal('modal-add-bloc');
   renderActiveWorkout();
   showToast('🔁 Bloc "'+name+'" créé — ajoutez des exercices dedans','info');
+}
+
+// ── Sauvegarder un bloc existant dans la bibliothèque ──
+function saveBlocToLibrary(ii) {
+  const bloc = currentWorkout?.items?.[ii];
+  if(!bloc || bloc.type !== 'bloc') return;
+  if(!bloc.exercises?.length) { showToast('⚠️ Ajoutez des exercices au bloc avant de le sauvegarder', 'error'); return; }
+
+  if(!state.bloc_library) state.bloc_library = [];
+  const exists = state.bloc_library.find(b => b.name.toLowerCase() === bloc.name.toLowerCase());
+  if(exists) { showToast('⚠️ Un bloc "' + bloc.name + '" existe déjà dans la bibliothèque', 'error'); return; }
+
+  state.bloc_library.push({
+    id: generateId(),
+    name: bloc.name,
+    rounds: bloc.rounds,
+    exercises: bloc.exercises.map(ex => ({
+      exerciseId: ex.exerciseId, name: ex.name, muscle: ex.muscle, unit: ex.unit || 'reps',
+      sets: (ex.sets||[]).map(s => ({ reps: s.reps, weight: s.weight, rest: s.rest }))
+    }))
+  });
+  saveState();
+  showToast('📚 Bloc "' + bloc.name + '" sauvegardé dans la bibliothèque', 'success');
+}
+
+// ── Ajouter un bloc depuis la bibliothèque ──
+function addBlocFromLibrary(blocId) {
+  if(!currentWorkout){ showToast('⚠️ Démarrez une séance d\'abord','error'); return; }
+  const lib = (state.bloc_library||[]).find(b => b.id === blocId);
+  if(!lib) return;
+  if(!currentWorkout.items) currentWorkout.items = [];
+
+  currentWorkout.items.push({
+    type: 'bloc', id: generateId(), name: lib.name, rounds: lib.rounds,
+    exercises: lib.exercises.map(ex => ({
+      exerciseId: ex.exerciseId, name: ex.name, muscle: ex.muscle, unit: ex.unit || 'reps',
+      sets: (getLastSetsForExercise(ex.exerciseId) || ex.sets || [{reps:'',weight:'',rest:60}]).map(s => ({reps:s.reps||'',weight:s.weight||'',rest:s.rest||60}))
+    }))
+  });
+  closeModal('modal-bloc-library');
+  renderActiveWorkout();
+  showToast('🔁 Bloc "' + lib.name + '" ajouté à la séance', 'success');
+}
+
+function deleteBlocFromLibrary(blocId) {
+  if(!confirm('Supprimer ce bloc de la bibliothèque ?')) return;
+  state.bloc_library = (state.bloc_library||[]).filter(b => b.id !== blocId);
+  saveState();
+  renderBlocLibrary();
+  showToast('🗑 Bloc supprimé', 'success');
+}
+
+function renderBlocLibrary() {
+  const el = document.getElementById('bloc-library-list');
+  if(!el) return;
+  const blocs = state.bloc_library || [];
+  if(!blocs.length) {
+    el.innerHTML = '<div class="text-muted text-sm" style="padding:16px;text-align:center">Aucun bloc sauvegardé.<br>Créez un bloc dans une séance puis cliquez "📚 Sauvegarder ce bloc".</div>';
+    return;
+  }
+  el.innerHTML = blocs.map(b => `
+    <div class="exercise-entry" style="border-left:3px solid var(--accent-neon)">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span style="font-weight:700;color:var(--accent-neon)">🔁 ${b.name}</span>
+        <span class="badge badge-neon">${b.rounds||3}× · ${b.exercises.length} ex</span>
+        <button onclick="addBlocFromLibrary('${b.id}')" class="btn btn-primary btn-sm" style="margin-left:auto">+ Ajouter</button>
+        <button onclick="deleteBlocFromLibrary('${b.id}')" class="btn btn-ghost btn-sm" style="color:var(--accent-fire)">🗑</button>
+      </div>
+      <div style="font-size:12px;color:var(--text-2)">
+        ${b.exercises.map(ex => ex.name).join(' · ')}
+      </div>
+    </div>`).join('');
+}
+
+function openBlocMenu() {
+  if((state.bloc_library||[]).length > 0) {
+    renderBlocLibrary();
+    openModal('modal-bloc-library');
+  } else {
+    openModal('modal-add-bloc');
+  }
 }
 
 // ── Ajouter un WOD ──
@@ -2771,6 +3282,19 @@ function showWorkoutDetail(id) {
   }));
 
   const itemsHtml = items.map(item => {
+    if(item.type === 'emom') {
+      return `<div class="exercise-entry mb-8" style="border-left:3px solid var(--accent-purple)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <span>⏱️</span>
+          <span style="font-weight:700;color:var(--accent-purple)">${item.name||'EMOM'}</span>
+          <span class="badge badge-purple">${(item.exercisesByMinute||[]).length} min</span>
+        </div>
+        ${(item.exercisesByMinute||[]).map((min,mi) => `
+          <div style="font-size:12px;color:var(--text-1);padding:3px 0">
+            <strong>Min ${mi+1}:</strong> ${(min.exercises||[]).map(ex=>ex.name+' x'+(ex.amount||'?')+(ex.unit==='secondes'?'s':'')).join(' + ')}
+          </div>`).join('')}
+      </div>`;
+    }
     if(item.type === 'bloc') {
       return `<div class="exercise-entry mb-8" style="border-left:3px solid var(--accent-neon)">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
@@ -2808,12 +3332,15 @@ function showWorkoutDetail(id) {
 
   const el = document.getElementById('workout-detail-content');
   if(el) el.innerHTML = `
-    <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:16px">
+    <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:16px;gap:8px">
       <div>
         <div class="section-title">${w.title} ${w.trainingType?`<span class="badge badge-purple">${w.trainingType}</span>`:''}</div>
         <div class="text-muted text-sm">${formatDateFr(w.date)} · ${w.duration||'?'} min · ${Math.round(w.totalVolume||0).toLocaleString()} kg volume</div>
       </div>
-      <button onclick="deleteWorkout('${w.id}')" class="btn btn-ghost btn-sm" style="color:var(--accent-fire);border-color:rgba(255,77,28,0.3);flex-shrink:0">🗑 Supprimer</button>
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        <button onclick="shareWorkout('${w.id}')" class="btn btn-neon btn-sm" title="Partager">📤</button>
+        <button onclick="deleteWorkout('${w.id}')" class="btn btn-ghost btn-sm" style="color:var(--accent-fire);border-color:rgba(255,77,28,0.3)">🗑</button>
+      </div>
     </div>
     ${itemsHtml || '<div class="text-muted text-sm">Aucun détail disponible</div>'}`;
 
@@ -2992,6 +3519,67 @@ function toggleRunAdvanced() {
   if(arrow) arrow.textContent = open ? '▲' : '▼';
 }
 
+function openCorosLink() {
+  const link = document.getElementById('coros-link')?.value?.trim();
+  if(!link) { showToast('⚠️ Collez un lien Coros d\'abord', 'error'); return; }
+  window.open(link, '_blank');
+  showToast('💡 Copiez le résumé de la séance puis collez-le dans le champ ci-dessous', 'info');
+}
+
+async function extractCorosData() {
+  const text = document.getElementById('coros-paste-data')?.value?.trim();
+  if(!text) { showToast('⚠️ Collez les données Coros d\'abord', 'error'); return; }
+
+  const btn = document.getElementById('btn-coros-extract');
+  if(btn) { btn.innerHTML = '<span class="spinner"></span> Extraction...'; btn.disabled = true; }
+
+  const result = await AI.parseCorosText(text);
+
+  if(btn) { btn.textContent = '🤖 Extraire les données automatiquement'; btn.disabled = false; }
+
+  const resultEl = document.getElementById('coros-extract-result');
+
+  if(result && result.detected) {
+    // Remplir les champs du formulaire
+    if(result.type) { const el = document.getElementById('run-type'); if(el) { el.value = result.type; toggleIntervalFields(); } }
+    if(result.distance) document.getElementById('run-distance').value = result.distance;
+    if(result.timeMin != null) document.getElementById('run-time-min').value = result.timeMin;
+    if(result.timeSec != null) document.getElementById('run-time-sec').value = result.timeSec;
+    if(result.paceMin != null) document.getElementById('run-avgpace-min').value = result.paceMin;
+    if(result.paceSec != null) document.getElementById('run-avgpace-sec').value = result.paceSec;
+
+    // Champs avancés
+    const advBox = document.getElementById('run-advanced-fields');
+    if(advBox) advBox.style.display = 'block';
+    const advArrow = document.getElementById('run-advanced-arrow');
+    if(advArrow) advArrow.textContent = '▲';
+
+    if(result.hrAvg) document.getElementById('run-hr-avg').value = result.hrAvg;
+    if(result.hrMax) document.getElementById('run-hr-max').value = result.hrMax;
+    if(result.calories) document.getElementById('run-calories').value = result.calories;
+    if(result.elevUp) document.getElementById('run-elevation-up').value = result.elevUp;
+    if(result.elevDown) document.getElementById('run-elevation-down').value = result.elevDown;
+    if(result.power) document.getElementById('run-power').value = result.power;
+    if(result.cadence) document.getElementById('run-cadence').value = result.cadence;
+    if(result.trainingLoad) document.getElementById('run-training-load').value = result.trainingLoad;
+    if(result.aerobicEff) document.getElementById('run-aerobic-effect').value = result.aerobicEff;
+    if(result.anaerobicEff) document.getElementById('run-anaerobic-effect').value = result.anaerobicEff;
+
+    if(resultEl) {
+      resultEl.textContent = '✅ Données extraites et pré-remplies dans le formulaire ci-dessous !';
+      resultEl.style.display = 'block';
+    }
+    showToast('🤖 Données Coros importées !', 'success');
+  } else {
+    if(resultEl) {
+      resultEl.textContent = '⚠️ Impossible d\'extraire des données de ce texte. Remplissez manuellement.';
+      resultEl.style.color = 'var(--accent-gold)';
+      resultEl.style.display = 'block';
+    }
+    showToast('⚠️ Extraction incomplète', 'info');
+  }
+}
+
 function renderRunHistory() {
   const el = document.getElementById('run-history-list');
   if(!el) return;
@@ -3007,6 +3595,7 @@ function renderRunHistory() {
           ${r.distance?`<div style="text-align:center"><div class="text-neon text-mono">${r.distance} km</div><div class="text-muted text-sm">Distance</div></div>`:''}
           ${r.time?`<div style="text-align:center"><div class="text-mono">${r.time}</div><div class="text-muted text-sm">Temps</div></div>`:''}
           ${r.pace?`<div style="text-align:center"><div class="text-gold text-mono">${formatPace(r.pace)}</div><div class="text-muted text-sm">Allure</div></div>`:''}
+          <button onclick="shareRun('${r.id}')" class="btn btn-neon btn-sm" style="padding:4px 8px" title="Partager">📤</button>
           <button onclick="deleteRun('${r.id}')" class="btn btn-ghost btn-sm" style="color:var(--accent-fire);padding:4px 8px" title="Supprimer">🗑</button>
         </div>
       </div>
@@ -3099,6 +3688,7 @@ function renderSwimHistory() {
         <div><div class="text-neon text-mono">${s.distance} km</div><div class="text-muted text-sm">Distance</div></div>
         <div><div class="text-mono">${s.time}</div><div class="text-muted text-sm">Temps</div></div>
         ${s.laps?`<div><div class="text-gold">${s.laps}</div><div class="text-muted text-sm">Longueurs</div></div>`:''}
+        <button onclick="shareSwim('${s.id}')" class="btn btn-neon btn-sm" style="padding:4px 8px" title="Partager">📤</button>
         <button onclick="deleteSwim('${s.id}')" class="btn btn-ghost btn-sm" style="color:var(--accent-fire);padding:4px 8px" title="Supprimer">🗑</button>
       </div>
     </div>`).join('')
@@ -3141,6 +3731,7 @@ function renderCombatHistory() {
         <div><div class="text-fire text-mono">${c.duration} min</div><div class="text-muted text-sm">Durée</div></div>
         <div><div class="text-gold">${c.intensity}/10</div><div class="text-muted text-sm">Intensité</div></div>
         <div><div class="text-green text-mono">~${c.calories||'?'}</div><div class="text-muted text-sm">kcal</div></div>
+        <button onclick="shareCombat('${c.id}')" class="btn btn-neon btn-sm" style="padding:4px 8px" title="Partager">📤</button>
         <button onclick="deleteCombat('${c.id}')" class="btn btn-ghost btn-sm" style="color:var(--accent-fire);padding:4px 8px" title="Supprimer">🗑</button>
       </div>
     </div>`).join('')
@@ -3765,6 +4356,133 @@ function resetAllData(){
 // ════════════════════════════════════════════════════════════
 // 5. APP INIT
 // ════════════════════════════════════════════════════════════
+
+// ════════════════════════════════════════════════════════════
+// PARTAGE DE SÉANCE (SMS / texte)
+// ════════════════════════════════════════════════════════════
+
+function shareViaSMS(text) {
+  // Utilise l'API Web Share si dispo (mobile), sinon sms: ou copie
+  if(navigator.share) {
+    navigator.share({ text }).catch(() => _fallbackShare(text));
+  } else {
+    _fallbackShare(text);
+  }
+}
+
+function _fallbackShare(text) {
+  // Tentative SMS (mobile) puis fallback copie clipboard
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  if(isMobile) {
+    window.location.href = 'sms:?body=' + encodeURIComponent(text);
+  } else {
+    navigator.clipboard?.writeText(text).then(() => {
+      showToast('📋 Texte copié dans le presse-papier !', 'success');
+    }).catch(() => {
+      showToast('❌ Impossible de copier', 'error');
+    });
+  }
+}
+
+function formatWorkoutForShare(w) {
+  const lines = [];
+  lines.push('🏋️ ' + (w.title || 'Séance musculation'));
+  lines.push('📅 ' + formatDateFr(w.date) + (w.duration ? ' · ' + w.duration + ' min' : ''));
+  if(w.trainingType) lines.push('🎯 ' + w.trainingType);
+  lines.push('');
+
+  const items = w.items || (w.exercises||[]).map(ex=>({type: ex.isWOD?'wod':'exercise', ...ex}));
+
+  items.forEach(item => {
+    if(item.type === 'bloc') {
+      lines.push('🔁 ' + item.name + ' (' + (item.rounds||1) + ' rounds)');
+      (item.exercises||[]).forEach(ex => {
+        const setsStr = (ex.sets||[]).map(s => (s.reps||'?') + (ex.unit==='secondes'?'s':' reps') + (s.weight?' @ '+s.weight+'kg':'')).join(', ');
+        lines.push('  • ' + ex.name + ' : ' + setsStr);
+      });
+      lines.push('');
+    } else if(item.type === 'wod') {
+      lines.push('⚡ ' + item.name);
+      if(item.description) lines.push('  ' + item.description.replace(/\n/g, '\n  '));
+      const tours = (item.sets||[]).filter(s=>s.rounds||s.weight).map((s,i)=>'Tour '+(i+1)+': '+(s.rounds||'-')+' rounds'+(s.weight?' / '+s.weight+'kg':'')+(s.rest?' / repos '+s.rest+'s':''));
+      if(tours.length) lines.push('  ' + tours.join(' | '));
+      lines.push('');
+    } else if(item.type === 'emom') {
+      lines.push('⏱️ EMOM ' + (item.minutes||item.exercisesByMinute?.length||0) + ' min');
+      (item.exercisesByMinute||[]).forEach((min, i) => {
+        const exList = (min.exercises||[]).map(e => e.name + ' x' + e.amount + (e.unit==='secondes'?'s':'')).join(' + ');
+        lines.push('  Min ' + (i+1) + ': ' + exList);
+      });
+      lines.push('');
+    } else {
+      const setsStr = (item.sets||[]).map(s => (s.reps||'?') + (item.unit==='secondes'?'s':' reps') + (s.weight?' @ '+s.weight+'kg':'')).join(', ');
+      lines.push('💪 ' + item.name + ' (' + (item.muscle||'') + ')');
+      lines.push('  ' + setsStr);
+    }
+  });
+
+  if(w.totalVolume) lines.push('📊 Volume total : ' + Math.round(w.totalVolume).toLocaleString() + ' kg');
+  lines.push('');
+  lines.push('— Envoyé depuis FitCoach Pro 💪');
+
+  return lines.join('\n');
+}
+
+function formatRunForShare(r) {
+  const lines = [];
+  lines.push('🏃 ' + (r.type || 'Course à pied'));
+  lines.push('📅 ' + formatDateFr(r.date));
+  lines.push('');
+  if(r.distance) lines.push('📍 Distance : ' + r.distance + ' km');
+  if(r.time) lines.push('⏱️ Temps : ' + r.time);
+  if(r.pace) lines.push('⚡ Allure : ' + formatPace(r.pace));
+  if(r.hrAvg) lines.push('❤️ FC moyenne : ' + r.hrAvg + ' bpm');
+  if(r.calories) lines.push('🔥 Calories : ' + r.calories + ' kcal');
+  if(r.elevUp) lines.push('⛰️ Dénivelé+ : ' + r.elevUp + ' m');
+  if(r.power) lines.push('⚡ Puissance : ' + r.power + ' W');
+  if(r.intervals?.length) {
+    lines.push('');
+    lines.push('Tours : ' + r.intervals.map(i => i.lap+'('+i.time+')').join(', '));
+  }
+  if(r.notes) { lines.push(''); lines.push('📝 ' + r.notes); }
+  lines.push('');
+  lines.push('— Envoyé depuis FitCoach Pro 💪');
+  return lines.join('\n');
+}
+
+function formatSwimForShare(s) {
+  const lines = [];
+  lines.push('🏊 ' + (s.style || 'Natation') + ' · Piscine ' + s.poolLength + 'm');
+  lines.push('📅 ' + formatDateFr(s.date));
+  lines.push('');
+  if(s.distance) lines.push('📍 Distance : ' + s.distance + ' km');
+  if(s.time) lines.push('⏱️ Temps : ' + s.time);
+  if(s.laps) lines.push('🔢 Longueurs : ' + s.laps);
+  if(s.notes) { lines.push(''); lines.push('📝 ' + s.notes); }
+  lines.push('');
+  lines.push('— Envoyé depuis FitCoach Pro 💪');
+  return lines.join('\n');
+}
+
+function formatCombatForShare(c) {
+  const lines = [];
+  lines.push('🥊 ' + (c.sport || 'Combat') + ' — ' + c.type);
+  lines.push('📅 ' + formatDateFr(c.date));
+  lines.push('');
+  if(c.duration) lines.push('⏱️ Durée : ' + c.duration + ' min');
+  if(c.intensity) lines.push('💪 Intensité : ' + c.intensity + '/10');
+  if(c.calories) lines.push('🔥 Calories : ~' + c.calories + ' kcal');
+  if(c.notes) { lines.push(''); lines.push('📝 ' + c.notes); }
+  lines.push('');
+  lines.push('— Envoyé depuis FitCoach Pro 💪');
+  return lines.join('\n');
+}
+
+function shareWorkout(id) { const w = state.workouts.find(x=>x.id===id); if(w) shareViaSMS(formatWorkoutForShare(w)); }
+function shareRun(id)     { const r = state.runs.find(x=>x.id===id); if(r) shareViaSMS(formatRunForShare(r)); }
+function shareSwim(id)    { const s = (state.swims||[]).find(x=>x.id===id); if(s) shareViaSMS(formatSwimForShare(s)); }
+function shareCombat(id)  { const c = state.combats.find(x=>x.id===id); if(c) shareViaSMS(formatCombatForShare(c)); }
+
 document.addEventListener('DOMContentLoaded', async () => {
   updateHeaderDate();
   setInterval(updateHeaderDate, 60000);
