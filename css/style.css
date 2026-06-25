@@ -93,10 +93,31 @@ ul { list-style: none; }
   flex-direction: column;
   position: fixed;
   top: 0; left: 0; bottom: 0;
-  z-index: 100;
-  transition: transform var(--transition);
+  z-index: 200;
+  transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
   overflow-y: auto;
   overflow-x: hidden;
+  transform: translateX(-100%);
+  box-shadow: 4px 0 24px rgba(0,0,0,0.3);
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}
+
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 199;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+}
+
+.sidebar-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .sidebar-logo {
@@ -203,7 +224,7 @@ ul { list-style: none; }
 
 /* ── Main Content ── */
 .main {
-  margin-left: var(--sidebar-w);
+  margin-left: 0;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -1042,25 +1063,17 @@ canvas { width: 100% !important; }
 }
 
 @media (max-width: 900px) {
-  :root { --sidebar-w: 64px; }
-  .nav-item span { display: none; }
-  .sidebar-section-label { display: none; }
-  .logo-sub { display: none; }
-  .logo-text { font-size: 20px; }
-  .sidebar-footer .user-name, .sidebar-footer .user-level { display: none; }
   .grid-3 { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 640px) {
-  :root { --sidebar-w: 0px; }
-  .sidebar { transform: translateX(-100%); }
-  .sidebar.mobile-open { transform: none; width: 240px; box-shadow: 4px 0 32px rgba(0,0,0,0.7); }
   .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
   .content { padding: 12px; padding-bottom: 80px; }
   .header { padding: 0 16px; }
   .ai-panel { width: 100%; right: -100%; }
   .main { padding-bottom: 64px; }
   .ai-toggle-btn { bottom: 80px; right: 16px; width: 48px; height: 48px; font-size: 18px; }
+  .sidebar { width: 280px; }
 }
 
 /* ── Mobile Bottom Navigation ── */
@@ -1336,9 +1349,7 @@ input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
 @media (max-width: 640px) {
   .ai-panel { bottom: 56px; }
   .ai-input-area { padding-bottom: 12px; }
-  :root { --sidebar-w: 0px; }
-  .sidebar { display: none !important; }
-  .main { margin-left: 0 !important; padding-bottom: 60px; }
+  .main { padding-bottom: 60px; }
   .mobile-bottom-nav { display: block; }
   .ai-toggle-btn { bottom: 80px; right: 16px; width: 48px; height: 48px; font-size: 20px; }
   .content { padding: 12px; }
