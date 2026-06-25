@@ -23,7 +23,8 @@
 <body>
 <div id="app">
 
-<!-- ═══════ SIDEBAR (desktop) ═══════ -->
+<!-- ═══════ SIDEBAR (drawer) ═══════ -->
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-logo">
     <div class="logo-text">FITCOACH</div>
@@ -31,26 +32,26 @@
   </div>
   <div class="sidebar-section">
     <div class="sidebar-section-label">Principal</div>
-    <div class="nav-item active" data-page="dashboard" onclick="navigateTo('dashboard')"><span class="nav-icon">⚡</span><span>Dashboard</span></div>
-    <div class="nav-item" data-page="planning" onclick="navigateTo('planning')"><span class="nav-icon">📅</span><span>Planning</span></div>
+    <div class="nav-item active" data-page="dashboard" onclick="navigateTo('dashboard');closeSidebar()"><span class="nav-icon">⚡</span><span>Dashboard</span></div>
+    <div class="nav-item" data-page="planning" onclick="navigateTo('planning');closeSidebar()"><span class="nav-icon">📅</span><span>Planning</span></div>
   </div>
   <div class="sidebar-section">
     <div class="sidebar-section-label">Entraînement</div>
-    <div class="nav-item" data-page="workout" onclick="navigateTo('workout')"><span class="nav-icon">🏋️</span><span>Musculation</span></div>
-    <div class="nav-item" data-page="running" onclick="navigateTo('running')"><span class="nav-icon">🏃</span><span>Course</span></div>
-    <div class="nav-item" data-page="swimming" onclick="navigateTo('swimming')"><span class="nav-icon">🏊</span><span>Piscine</span></div>
-    <div class="nav-item" data-page="combat" onclick="navigateTo('combat')"><span class="nav-icon">🥊</span><span>Combat</span></div>
+    <div class="nav-item" data-page="workout" onclick="navigateTo('workout');closeSidebar()"><span class="nav-icon">🏋️</span><span>Musculation</span></div>
+    <div class="nav-item" data-page="running" onclick="navigateTo('running');closeSidebar()"><span class="nav-icon">🏃</span><span>Course</span></div>
+    <div class="nav-item" data-page="swimming" onclick="navigateTo('swimming');closeSidebar()"><span class="nav-icon">🏊</span><span>Piscine</span></div>
+    <div class="nav-item" data-page="combat" onclick="navigateTo('combat');closeSidebar()"><span class="nav-icon">🥊</span><span>Combat</span></div>
   </div>
   <div class="sidebar-section">
     <div class="sidebar-section-label">Suivi</div>
-    <div class="nav-item" data-page="steps" onclick="navigateTo('steps')"><span class="nav-icon">👟</span><span>Pas</span></div>
-    <div class="nav-item" data-page="analysis" onclick="navigateTo('analysis')"><span class="nav-icon">📊</span><span>Analyse</span></div>
-    <div class="nav-item" data-page="recovery" onclick="navigateTo('recovery')"><span class="nav-icon">😴</span><span>Récupération</span></div>
-    <div class="nav-item" data-page="nutrition" onclick="navigateTo('nutrition')"><span class="nav-icon">🥗</span><span>Nutrition</span></div>
-    <div class="nav-item" data-page="gamification" onclick="navigateTo('gamification')"><span class="nav-icon">🏆</span><span>Achievements</span></div>
+    <div class="nav-item" data-page="steps" onclick="navigateTo('steps');closeSidebar()"><span class="nav-icon">👟</span><span>Pas</span></div>
+    <div class="nav-item" data-page="analysis" onclick="navigateTo('analysis');closeSidebar()"><span class="nav-icon">📊</span><span>Analyse</span></div>
+    <div class="nav-item" data-page="recovery" onclick="navigateTo('recovery');closeSidebar()"><span class="nav-icon">😴</span><span>Récupération</span></div>
+    <div class="nav-item" data-page="nutrition" onclick="navigateTo('nutrition');closeSidebar()"><span class="nav-icon">🥗</span><span>Nutrition</span></div>
+    <div class="nav-item" data-page="gamification" onclick="navigateTo('gamification');closeSidebar()"><span class="nav-icon">🏆</span><span>Achievements</span></div>
   </div>
   <div class="sidebar-section">
-    <div class="nav-item" data-page="settings" onclick="navigateTo('settings');renderSettings()"><span class="nav-icon">⚙️</span><span>Paramètres</span></div>
+    <div class="nav-item" data-page="settings" onclick="navigateTo('settings');renderSettings();closeSidebar()"><span class="nav-icon">⚙️</span><span>Paramètres</span></div>
   </div>
   <div class="sidebar-footer">
     <div class="user-card">
@@ -63,7 +64,13 @@
 <!-- ═══════ MAIN ═══════ -->
 <main class="main">
   <header class="header">
-    <h1 class="header-title" id="header-title">Dashboard</h1>
+    <div style="display:flex;align-items:center;gap:12px">
+      <button id="hamburger-btn" onclick="toggleSidebar()" aria-label="Menu"
+        style="background:var(--bg-3);border:1px solid var(--border);border-radius:8px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0">
+        <span style="font-size:18px;color:var(--text-0)">☰</span>
+      </button>
+      <h1 class="header-title" id="header-title">Dashboard</h1>
+    </div>
     <div class="header-actions">
       <span class="header-date" id="header-date"></span>
       <span id="sync-indicator" style="font-size:11px;color:var(--text-3);font-family:var(--font-mono)"></span>
@@ -427,25 +434,9 @@
     <div class="mobile-nav-item" data-page="workout" onclick="navigateTo('workout')"><span class="mnav-icon">🏋️</span><span class="mnav-label">Muscu</span></div>
     <div class="mobile-nav-item" data-page="running" onclick="navigateTo('running')"><span class="mnav-icon">🏃</span><span class="mnav-label">Course</span></div>
     <div class="mobile-nav-item" data-page="analysis" onclick="navigateTo('analysis')"><span class="mnav-icon">📊</span><span class="mnav-label">Analyse</span></div>
-    <div class="mobile-nav-item" onclick="openMoreSheet()"><span class="mnav-icon">⋯</span><span class="mnav-label">Plus</span></div>
+    <div class="mobile-nav-item" onclick="openSidebar()"><span class="mnav-icon">☰</span><span class="mnav-label">Menu</span></div>
   </div>
 </nav>
-
-<!-- "Plus" sheet -->
-<div class="mobile-more-sheet-overlay" id="more-overlay" onclick="closeMoreSheet()"></div>
-<div class="mobile-more-sheet" id="more-sheet">
-  <div style="font-family:var(--font-display);font-size:18px;letter-spacing:1px;margin-bottom:4px">Plus</div>
-  <div class="more-grid">
-    <div class="more-item" onclick="navigateTo('planning');closeMoreSheet()"><span>📅</span><span>Planning</span></div>
-    <div class="more-item" onclick="navigateTo('swimming');closeMoreSheet()"><span>🏊</span><span>Piscine</span></div>
-    <div class="more-item" onclick="navigateTo('combat');closeMoreSheet()"><span>🥊</span><span>Combat</span></div>
-    <div class="more-item" onclick="navigateTo('steps');closeMoreSheet()"><span>👟</span><span>Pas</span></div>
-    <div class="more-item" onclick="navigateTo('recovery');closeMoreSheet()"><span>😴</span><span>Récup.</span></div>
-    <div class="more-item" onclick="navigateTo('nutrition');closeMoreSheet()"><span>🥗</span><span>Nutrition</span></div>
-    <div class="more-item" onclick="navigateTo('gamification');closeMoreSheet()"><span>🏆</span><span>Badges</span></div>
-    <div class="more-item" onclick="navigateTo('settings');renderSettings();closeMoreSheet()"><span>⚙️</span><span>Réglages</span></div>
-  </div>
-</div>
 
 <!-- ═══════ AI PANEL ═══════ -->
 <div class="ai-panel" id="ai-panel">
@@ -548,7 +539,8 @@
 <!-- Add Custom Exercise Modal -->
 <div class="modal-overlay" id="modal-add-custom-exercise">
   <div class="modal">
-    <div class="modal-header"><div class="modal-title">Créer un exercice</div><button class="modal-close" onclick="closeModal('modal-add-custom-exercise')">✕</button></div>
+    <div class="modal-header"><div class="modal-title">Créer un exercice</div><button class="modal-close" onclick="closeModal('modal-add-custom-exercise');resetCustomExForm()">✕</button></div>
+    <input type="hidden" id="custom-ex-edit-id">
     <div class="form-group">
       <label class="form-label">Nom de l'exercice</label>
       <input type="text" id="custom-ex-name" class="form-input" placeholder="Ex: Trap Bar Deadlift, Leg press incliné...">
@@ -1021,6 +1013,8 @@
 <div class="modal-overlay" id="modal-add-plan">
   <div class="modal">
     <div class="modal-header"><div class="modal-title">📅 Planifier une séance</div><button class="modal-close" onclick="closeModal('modal-add-plan')">✕</button></div>
+    <input type="hidden" id="plan-edit-id">
+    <input type="hidden" id="plan-edit-series-id">
     <div id="plan-day-info" style="margin-bottom:12px"></div>
     <div class="form-row">
       <div class="form-group" style="flex:1"><label class="form-label">Date</label><input type="date" id="plan-date" class="form-input"></div>
@@ -1035,7 +1029,7 @@
     </div>
     <div class="form-group"><label class="form-label">Titre</label><input type="text" id="plan-title" class="form-input" placeholder="Ex: Push Day, 10km EF, Krav Maga..."></div>
     <div class="form-group"><label class="form-label">Type</label>
-      <select id="plan-type" class="form-select" id="plan-type-select">
+      <select id="plan-type" class="form-select">
         <option value="Musculation">🏋️ Musculation</option>
         <option value="Course">🏃 Course à pied</option>
         <option value="Piscine">🏊 Piscine</option>
@@ -1047,6 +1041,44 @@
       </select>
     </div>
     <div class="form-group"><label class="form-label">Notes</label><textarea id="plan-notes" class="form-textarea" placeholder="Objectifs, détails..."></textarea></div>
+
+    <!-- Récurrence -->
+    <div id="plan-recurrence-section" style="border-top:1px solid var(--border);padding-top:14px;margin-top:6px">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--text-1);margin-bottom:10px">
+        <input type="checkbox" id="plan-recurring-toggle" style="accent-color:var(--accent-neon);width:16px;height:16px" onchange="toggleRecurrenceFields()">
+        🔁 Répéter cette séance
+      </label>
+
+      <div id="plan-recurrence-fields" style="display:none">
+        <div class="form-group">
+          <label class="form-label">Jours de la semaine</label>
+          <div id="plan-weekday-picker" style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Toutes les X semaine(s)</label>
+            <input type="number" id="plan-recur-interval" class="form-input" value="1" min="1" max="12">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fin de la récurrence</label>
+            <select id="plan-recur-end-type" class="form-select" onchange="toggleRecurEndFields()">
+              <option value="never">Jamais</option>
+              <option value="count">Après X occurrences</option>
+              <option value="date">À une date précise</option>
+            </select>
+          </div>
+        </div>
+        <div id="plan-recur-end-count" style="display:none" class="form-group">
+          <label class="form-label">Nombre d'occurrences</label>
+          <input type="number" id="plan-recur-count" class="form-input" value="10" min="1" max="200">
+        </div>
+        <div id="plan-recur-end-date" style="display:none" class="form-group">
+          <label class="form-label">Date de fin</label>
+          <input type="date" id="plan-recur-until" class="form-input">
+        </div>
+      </div>
+    </div>
+
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('modal-add-plan')">Annuler</button>
       <button class="btn btn-primary" onclick="savePlan()">📅 Planifier</button>
@@ -1331,6 +1363,29 @@ async function createJSONBin(key) {
 }
 
 function generateId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+function openSidebar() {
+  document.getElementById('sidebar')?.classList.add('open');
+  document.getElementById('sidebar-overlay')?.classList.add('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar')?.classList.remove('open');
+  document.getElementById('sidebar-overlay')?.classList.remove('open');
+}
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  if(sb?.classList.contains('open')) closeSidebar();
+  else openSidebar();
+}
+function escapeHtml(str) {
+  if(str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 function formatDate(d = new Date()) { return d.toISOString().split('T')[0]; }
 function today() { return formatDate(new Date()); }
 function timeStr(sec) {
@@ -1765,6 +1820,29 @@ function saveDetectedWorkout(btnContainer) {
       saveState();
       renderWorkoutHistory();
       showToast('🏋️ Séance enregistrée dans Musculation !', 'success');
+
+      // Proposer de sauvegarder aussi comme programme réutilisable
+      setTimeout(() => {
+        const container = document.getElementById('ai-messages');
+        if(!container) return;
+        const msg = '📚 Veux-tu aussi sauvegarder cette séance comme programme réutilisable ?';
+        _renderMessage('coach', msg);
+        _saveMessageToSession('assistant', msg);
+        const tplDiv = document.createElement('div');
+        tplDiv.style.cssText = 'padding:8px 12px 12px 44px;display:flex;gap:8px';
+        const btnYes = document.createElement('button');
+        btnYes.className = 'btn btn-primary btn-sm';
+        btnYes.textContent = '✅ Oui, en programme';
+        btnYes.onclick = function() { saveWorkoutAsTemplateFromChat(w, tplDiv); };
+        const btnNo = document.createElement('button');
+        btnNo.className = 'btn btn-ghost btn-sm';
+        btnNo.textContent = 'Non merci';
+        btnNo.onclick = function() { tplDiv.remove(); };
+        tplDiv.appendChild(btnYes);
+        tplDiv.appendChild(btnNo);
+        container.appendChild(tplDiv);
+        container.scrollTop = container.scrollHeight;
+      }, 600);
     }
 
     if(btnContainer) {
@@ -1776,6 +1854,28 @@ function saveDetectedWorkout(btnContainer) {
     showToast('❌ Erreur lors de l\'enregistrement : ' + e.message, 'error');
     if(btnContainer) btnContainer.remove();
   }
+}
+
+function saveWorkoutAsTemplateFromChat(workout, btnContainer) {
+  if(!state.workout_templates) state.workout_templates = [];
+  const tpl = {
+    id: generateId(),
+    title: workout.title || 'Programme (CoachIA)',
+    trainingType: workout.trainingType || 'général',
+    items: (workout.items || []).map(item => ({...item, sets: (item.sets||[]).map(s=>({reps:s.reps,weight:s.weight,rest:s.rest||90}))})),
+    exercises: (workout.exercises || []).map(ex => ({
+      exerciseId: ex.exerciseId, name: ex.name, muscle: ex.muscle,
+      sets: (ex.sets||[]).map(s=>({reps:s.reps, weight:s.weight, rest:s.rest||90}))
+    }))
+  };
+  state.workout_templates.push(tpl);
+  saveState();
+  renderWorkoutTemplates();
+  if(btnContainer) {
+    btnContainer.innerHTML = '<span style="font-size:12px;color:var(--accent-green);padding:4px 12px">✅ Programme sauvegardé !</span>';
+    setTimeout(() => btnContainer.remove(), 2500);
+  }
+  showToast('📚 Programme "' + tpl.title + '" créé !', 'success');
 }
 
 function renderChatHistoryList() {
@@ -2292,13 +2392,15 @@ function renderWorkoutTemplates() {
   el.innerHTML = tpls.map(t => {
     // Compter exercices (items ou exercises)
     const items = t.items || (t.exercises||[]).map(e=>({type:'exercise',...e}));
-    const exCount = items.reduce((n,item) => n + (item.type==='bloc' ? (item.exercises||[]).length : item.type==='wod' ? 0 : 1), 0);
+    const exCount = items.reduce((n,item) => n + (item.type==='bloc' ? (item.exercises||[]).length : (item.type==='wod'||item.type==='emom') ? 0 : 1), 0);
     const blocCount = items.filter(i=>i.type==='bloc').length;
     const wodCount = items.filter(i=>i.type==='wod').length;
+    const emomCount = items.filter(i=>i.type==='emom').length;
     const meta = [
       exCount + ' exercice'+(exCount>1?'s':''),
       blocCount>0 ? blocCount+' bloc'+(blocCount>1?'s':'') : '',
-      wodCount>0 ? wodCount+' WOD' : ''
+      wodCount>0 ? wodCount+' WOD' : '',
+      emomCount>0 ? emomCount+' EMOM' : ''
     ].filter(Boolean).join(' · ');
 
     return `<div class="exercise-entry">
@@ -2320,6 +2422,7 @@ function renderWorkoutTemplates() {
         ${items.map(item => {
           if(item.type==='bloc') return `<span style="color:var(--accent-neon)">🔁 ${item.name} (${item.rounds||3}×${(item.exercises||[]).length} ex)</span>`;
           if(item.type==='wod')  return `<span style="color:var(--accent-gold)">⚡ ${item.name}</span>`;
+          if(item.type==='emom') return `<span style="color:var(--accent-purple)">⏱️ ${item.name||'EMOM'} (${(item.exercisesByMinute||[]).length} min)</span>`;
           return `<span>${item.name}</span>`;
         }).join('<span style="margin:0 4px;color:var(--text-3)">·</span>')}
       </div>
@@ -2344,6 +2447,37 @@ function renderEditTemplateItems(tpl) {
   const items = tpl.items || (tpl.exercises||[]).map(e=>({type:'exercise',...e}));
 
   el.innerHTML = items.map((item, ii) => {
+    if(item.type === 'emom') {
+      const minutes = item.exercisesByMinute || [];
+      return `<div style="background:var(--bg-3);border:1px solid rgba(155,93,229,0.25);border-radius:8px;padding:10px 12px;margin-bottom:8px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <span style="color:var(--accent-purple);font-weight:700">⏱️ EMOM</span>
+          <input type="text" value="${item.name||''}" placeholder="Nom" class="form-input" style="font-size:12px;padding:4px 8px;flex:1"
+            onchange="updateTplEmomName('${tpl.id}',${ii},this.value)">
+          <span class="badge badge-purple" style="font-size:10px">${minutes.length} min</span>
+          <button onclick="removeTplItem('${tpl.id}',${ii})" style="color:var(--text-3);font-size:16px">×</button>
+        </div>
+        ${minutes.map((min, mi) => `
+          <div style="background:var(--bg-4);border-radius:6px;padding:6px 8px;margin-bottom:4px">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+              <span class="badge badge-purple" style="font-size:9px">MIN ${mi+1}</span>
+              <button onclick="removeTplEmomMinute('${tpl.id}',${ii},${mi})" style="margin-left:auto;color:var(--text-3);font-size:13px">×</button>
+            </div>
+            ${(min.exercises||[]).map((ex, exi) => `
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;flex-wrap:wrap">
+                <span style="font-size:12px;flex:1;min-width:80px">${ex.name}</span>
+                <input type="text" value="${ex.amount||''}" placeholder="qté" class="set-input" style="width:50px;font-size:11px;padding:3px 6px"
+                  onchange="updateTplEmomExAmount('${tpl.id}',${ii},${mi},${exi},this.value)">
+                <select onchange="updateTplEmomExUnit('${tpl.id}',${ii},${mi},${exi},this.value)" style="background:var(--bg-3);border:1px solid var(--border);border-radius:4px;padding:2px 4px;color:var(--text-1);font-size:10px">
+                  <option value="reps" ${(ex.unit||'reps')==='reps'?'selected':''}>reps</option>
+                  <option value="secondes" ${ex.unit==='secondes'?'selected':''}>sec</option>
+                </select>
+                <button onclick="removeTplEmomEx('${tpl.id}',${ii},${mi},${exi})" style="color:var(--text-3);font-size:13px">×</button>
+              </div>`).join('') || '<div class="text-muted text-sm" style="padding:2px 0">Aucun exercice</div>'}
+          </div>`).join('')}
+        <button onclick="addTplEmomMinute('${tpl.id}',${ii})" style="font-size:10px;color:var(--text-2);cursor:pointer;background:none;border:none;padding:2px 0">+ minute</button>
+      </div>`;
+    }
     if(item.type === 'bloc') {
       return `<div style="background:var(--bg-3);border:1px solid rgba(0,229,255,0.2);border-radius:8px;padding:10px 12px;margin-bottom:8px">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
@@ -2383,7 +2517,7 @@ function renderEditTemplateItems(tpl) {
           <button onclick="removeTplItem('${tpl.id}',${ii})" style="color:var(--text-3);font-size:16px">×</button>
         </div>
         <textarea class="form-textarea" style="font-size:12px;min-height:60px;margin-bottom:10px" placeholder="Détail du WOD..."
-          onchange="updateTplWodDesc('${tpl.id}',${ii},this.value)">${item.description||''}</textarea>
+          onchange="updateTplWodDesc('${tpl.id}',${ii},this.value)">${escapeHtml(item.description)}</textarea>
         <div style="display:grid;grid-template-columns:20px 1fr 1fr 1fr 18px;gap:4px;margin-bottom:4px;font-size:10px;color:var(--text-2);text-align:center">
           <span>#</span><span>Rounds</span><span>Poids kg</span><span>Repos s</span><span></span>
         </div>
@@ -2444,6 +2578,14 @@ function updateTplWodSet(id,ii,si,f,v) { const t=_getTpl(id); if(!t) return; con
 function addTplWodSet(id,ii) { const t=_getTpl(id); if(!t) return; const item=_getTplItems(t)[ii]; if(!item) return; if(!item.sets) item.sets=[]; const l=item.sets[item.sets.length-1]||{}; item.sets.push({rounds:l.rounds||'1',weight:l.weight||'',rest:l.rest||0}); _saveTplAndRefresh(t); }
 function removeTplWodSet(id,ii,si) { const t=_getTpl(id); if(!t) return; _getTplItems(t)[ii]?.sets?.splice(si,1); _saveTplAndRefresh(t); }
 
+// ── EMOM dans template ──
+function updateTplEmomName(id,ii,v) { const t=_getTpl(id); if(!t) return; const item=_getTplItems(t)[ii]; if(item) item.name=v; saveState(); }
+function addTplEmomMinute(id,ii) { const t=_getTpl(id); if(!t) return; const item=_getTplItems(t)[ii]; if(!item) return; if(!item.exercisesByMinute) item.exercisesByMinute=[]; item.exercisesByMinute.push({exercises:[]}); _saveTplAndRefresh(t); }
+function removeTplEmomMinute(id,ii,mi) { const t=_getTpl(id); if(!t) return; _getTplItems(t)[ii]?.exercisesByMinute?.splice(mi,1); _saveTplAndRefresh(t); }
+function removeTplEmomEx(id,ii,mi,exi) { const t=_getTpl(id); if(!t) return; _getTplItems(t)[ii]?.exercisesByMinute?.[mi]?.exercises?.splice(exi,1); _saveTplAndRefresh(t); }
+function updateTplEmomExAmount(id,ii,mi,exi,v) { const t=_getTpl(id); if(!t) return; const ex=_getTplItems(t)[ii]?.exercisesByMinute?.[mi]?.exercises?.[exi]; if(ex) ex.amount=v; saveState(); }
+function updateTplEmomExUnit(id,ii,mi,exi,v) { const t=_getTpl(id); if(!t) return; const ex=_getTplItems(t)[ii]?.exercisesByMinute?.[mi]?.exercises?.[exi]; if(ex) ex.unit=v; saveState(); }
+
 function saveEditTemplate() {
   const id = document.getElementById('edit-tpl-id')?.value;
   const tpl = _getTpl(id);
@@ -2465,6 +2607,8 @@ function saveCurrentAsTemplate() {
     trainingType: currentWorkout.trainingType||'général',
     items: (currentWorkout.items||[]).map(item => {
       if(item.type === 'bloc') return {...item, exercises:(item.exercises||[]).map(ex=>({...ex, sets:(ex.sets||[]).map(s=>({reps:s.reps,weight:s.weight,rest:s.rest||90}))}))};
+      if(item.type === 'emom') return {...item, exercisesByMinute: JSON.parse(JSON.stringify(item.exercisesByMinute||[]))};
+      if(item.type === 'wod') return {...item, sets:(item.sets||[]).map(s=>({rounds:s.rounds,weight:s.weight,rest:s.rest||0}))};
       return {...item, sets:(item.sets||[]).map(s=>({reps:s.reps,weight:s.weight,rest:s.rest||90}))};
     }),
     exercises: _getExercisesFlat(currentWorkout).map(ex=>({
@@ -2503,6 +2647,12 @@ function loadTemplate(id) {
       return { ...item, id:generateId(), exercises:(item.exercises||[]).map(ex=>({
         ...ex, sets: (getLastSetsForExercise(ex.exerciseId)||ex.sets||[{reps:'',weight:'',rest:90}]).map(s=>({reps:s.reps||'',weight:s.weight||'',rest:s.rest||90}))
       }))};
+    }
+    if(item.type === 'emom') {
+      return { ...item, id:generateId(), exercisesByMinute: JSON.parse(JSON.stringify(item.exercisesByMinute||[])) };
+    }
+    if(item.type === 'wod') {
+      return { ...item, id:generateId(), sets: (item.sets&&item.sets.length?item.sets:[{rounds:'1',weight:'',rest:0}]).map(s=>({rounds:s.rounds||'',weight:s.weight||'',rest:s.rest||0})) };
     }
     const lastSets = getLastSetsForExercise(item.exerciseId);
     return { ...item, type:'exercise',
@@ -2674,7 +2824,7 @@ function renderWodItem(wod, ii) {
       oninput="updateWodDesc(${ii}, this.value)"
       onfocus="this.style.borderColor='var(--accent-gold)'"
       onblur="this.style.borderColor='var(--border)'"
-    >${wod.description||''}</textarea>
+    >${escapeHtml(wod.description)}</textarea>
 
     <div style="display:grid;grid-template-columns:28px 1fr 1fr 1fr 22px;gap:4px;margin-bottom:4px;font-size:10px;color:var(--text-2);text-align:center">
       <span>#</span><span>Rounds</span><span>Kg total</span><span>Repos (s)</span><span></span>
@@ -3317,7 +3467,7 @@ function showWorkoutDetail(id) {
           <span style="font-weight:700;color:var(--accent-gold)">${item.name}</span>
           <span class="badge badge-gold">WOD</span>
         </div>
-        ${lines.length ? `<div style="font-size:12px;color:var(--text-1);line-height:1.8">${lines.map(l=>'• '+l).join('<br>')}</div>` : ''}
+        ${lines.length ? `<div style="font-size:12px;color:var(--text-1);line-height:1.8;white-space:pre-wrap">${escapeHtml(item.description)}</div>` : ''}
       </div>`;
     }
     // Exercice standard
@@ -3371,18 +3521,24 @@ function renderExerciseSelector(searchQuery='') {
     <div class="mb-12">
       <div class="text-muted text-sm mb-6" style="letter-spacing:1px;text-transform:uppercase">${muscle}</div>
       ${exs.map(ex=>`
-        <div class="exercise-entry" style="cursor:pointer;padding:8px 12px;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center"
-          onclick="addExerciseToWorkout('${ex.id}');closeModal('modal-add-exercise')">
-          <div>
-            <div style="font-weight:500;font-size:13px">${ex.name}</div>
+        <div class="exercise-entry" style="padding:8px 12px;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center">
+          <div style="cursor:pointer;flex:1" onclick="addExerciseToWorkout('${ex.id}');closeModal('modal-add-exercise')">
+            <div style="font-weight:500;font-size:13px">${escapeHtml(ex.name)}</div>
             <div class="text-muted text-sm">${ex.type}${ex.custom?' · Custom':''}</div>
           </div>
-          <span style="color:var(--text-3);font-size:20px">+</span>
+          <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+            ${ex.custom ? `
+              <button onclick="event.stopPropagation();openEditCustomExercise('${ex.id}')" style="color:var(--text-2);font-size:14px;background:none;border:none;cursor:pointer;padding:4px">✏️</button>
+              <button onclick="event.stopPropagation();deleteCustomExercise('${ex.id}')" style="color:var(--accent-fire);font-size:14px;background:none;border:none;cursor:pointer;padding:4px">🗑</button>
+            ` : ''}
+            <span style="color:var(--text-3);font-size:20px;cursor:pointer" onclick="addExerciseToWorkout('${ex.id}');closeModal('modal-add-exercise')">+</span>
+          </div>
         </div>`).join('')}
     </div>`).join('') : '<div class="text-muted text-sm" style="padding:16px">Aucun exercice trouvé</div>';
 }
 
 function addCustomExercise() {
+  const editId = document.getElementById('custom-ex-edit-id')?.value;
   const name = document.getElementById('custom-ex-name')?.value?.trim();
   const type = document.getElementById('custom-ex-type')?.value||'compound';
 
@@ -3396,26 +3552,80 @@ function addCustomExercise() {
   if(!name){ showToast('⚠️ Nom de l\'exercice requis','error'); return; }
   if(!checked.length){ showToast('⚠️ Sélectionnez au moins un groupe musculaire','error'); return; }
 
-  // Pour les exercices poly-articulaires, on stocke tous les muscles séparés par " / "
-  // Le premier est le muscle "principal" affiché dans le badge
   const muscle = checked.join(' / ');
-  const muscles = checked; // tableau complet pour les filtres
+  const muscles = checked;
 
-  const ex = { id:generateId(), name, muscle, muscles, type, custom:true };
-  state.exercises_library.push(ex);
-  saveState();
+  if(editId) {
+    // Mode édition : on met à jour l'exercice existant
+    const ex = state.exercises_library.find(e => e.id === editId);
+    if(ex) {
+      ex.name = name; ex.muscle = muscle; ex.muscles = muscles; ex.type = type;
+      saveState();
+      showToast('✅ "' + name + '" mis à jour', 'success');
+    }
+  } else {
+    // Mode création
+    const ex = { id:generateId(), name, muscle, muscles, type, custom:true };
+    state.exercises_library.push(ex);
+    saveState();
+    showToast('✅ "' + name + '" ajouté au catalogue', 'success');
+  }
+
   resetCustomExForm();
   closeModal('modal-add-custom-exercise');
-  showToast('✅ "' + name + '" ajouté au catalogue', 'success');
+  renderExerciseSelector();
+}
+
+function openEditCustomExercise(exId) {
+  const ex = state.exercises_library.find(e => e.id === exId);
+  if(!ex) return;
+  resetCustomExForm();
+  document.getElementById('custom-ex-edit-id').value = ex.id;
+  document.getElementById('custom-ex-name').value = ex.name;
+  document.getElementById('custom-ex-type').value = ex.type || 'compound';
+
+  const muscleList = ex.muscles && ex.muscles.length ? ex.muscles : ex.muscle.split(' / ').map(m=>m.trim());
+  const knownMuscles = ['Pectoraux','Dos','Épaules','Biceps','Triceps','Quadriceps','Ischio-jambiers','Mollets','Fessiers','Abdominaux','Trapèzes','Lombaires'];
+  const otherMuscles = [];
+  muscleList.forEach(m => {
+    const cb = document.querySelector(`input[name="custom-ex-muscles"][value="${m}"]`);
+    if(cb) cb.checked = true;
+    else otherMuscles.push(m);
+  });
+  if(otherMuscles.length) document.getElementById('custom-ex-muscle-other').value = otherMuscles.join(', ');
+
+  // Mettre à jour le titre et bouton de la modale
+  const titleEl = document.querySelector('#modal-add-custom-exercise .modal-title');
+  if(titleEl) titleEl.textContent = '✏️ Modifier l\'exercice';
+  const btnEl = document.querySelector('#modal-add-custom-exercise .btn-primary');
+  if(btnEl) btnEl.textContent = '✅ Enregistrer';
+
+  openModal('modal-add-custom-exercise');
+}
+
+function deleteCustomExercise(exId) {
+  const ex = state.exercises_library.find(e => e.id === exId);
+  if(!ex) return;
+  if(!confirm('Supprimer l\'exercice "' + ex.name + '" du catalogue ?\\n(Les séances passées utilisant cet exercice ne seront pas affectées)')) return;
+  state.exercises_library = state.exercises_library.filter(e => e.id !== exId);
+  saveState();
+  showToast('🗑 "' + ex.name + '" supprimé du catalogue', 'success');
   renderExerciseSelector();
 }
 
 function resetCustomExForm() {
+  const editIdEl = document.getElementById('custom-ex-edit-id');
+  if(editIdEl) editIdEl.value = '';
   const nameEl = document.getElementById('custom-ex-name');
   if(nameEl) nameEl.value = '';
   const otherEl = document.getElementById('custom-ex-muscle-other');
   if(otherEl) otherEl.value = '';
   document.querySelectorAll('input[name="custom-ex-muscles"]').forEach(cb => cb.checked = false);
+  // Réinitialiser titre/bouton de la modale
+  const titleEl = document.querySelector('#modal-add-custom-exercise .modal-title');
+  if(titleEl) titleEl.textContent = 'Créer un exercice';
+  const btnEl = document.querySelector('#modal-add-custom-exercise .btn-primary');
+  if(btnEl) btnEl.textContent = '✅ Ajouter';
 }
 
 async function generateAIWorkout() {
@@ -4099,33 +4309,226 @@ function renderCalendar() {
 }
 
 function calDayClick(ds) {
+  // Réinitialiser le formulaire (mode création, pas édition)
+  document.getElementById('plan-edit-id').value = '';
+  document.getElementById('plan-edit-series-id').value = '';
   setVal('plan-date',ds);
+  setVal('plan-title','');
+  setVal('plan-notes','');
+  setVal('plan-time-slot','Matin');
+  setVal('plan-type','Musculation');
+  document.getElementById('plan-recurring-toggle').checked = false;
+  document.getElementById('plan-recurrence-section').style.display = 'block';
+  toggleRecurrenceFields();
+  renderWeekdayPicker([]);
+
   // Show existing plans for that day
   const dayPlans=state.plans.filter(p=>p.date===ds);
   const infoEl=document.getElementById('plan-day-info');
-  if(infoEl) infoEl.innerHTML=dayPlans.length?`<div class="text-muted text-sm mb-8">${dayPlans.length} séance(s) déjà planifiée(s) ce jour :</div>${dayPlans.map(p=>`<div class="badge badge-neon" style="margin-right:4px;margin-bottom:4px">${p.title}</div>`).join('')}`:'';
+  if(infoEl) infoEl.innerHTML=dayPlans.length?`<div class="text-muted text-sm mb-8">${dayPlans.length} séance(s) déjà planifiée(s) ce jour :</div>${dayPlans.map(p=>`<div class="badge badge-neon" style="margin-right:4px;margin-bottom:4px">${escapeHtml(p.title)}</div>`).join('')}`:'';
   openModal('modal-add-plan');
 }
 
 function prevMonth(){calendarDate.setMonth(calendarDate.getMonth()-1);renderCalendar();}
 function nextMonth(){calendarDate.setMonth(calendarDate.getMonth()+1);renderCalendar();}
 
-function savePlan() {
-  const date=document.getElementById('plan-date')?.value;
-  const title=document.getElementById('plan-title')?.value;
-  const type=document.getElementById('plan-type')?.value;
-  const timeSlot=document.getElementById('plan-time-slot')?.value||'';
-  const notes=document.getElementById('plan-notes')?.value||'';
-  if(!date||!title){ showToast('⚠️ Date et titre requis','error'); return; }
-  // Allow multiple plans per day
-  state.plans.push({id:generateId(),date,title,type,timeSlot,notes});
-  saveState(); closeModal('modal-add-plan'); renderCalendar();
-  showToast('📅 Séance planifiée','success');
+// ── Récurrence : UI helpers ──
+const WEEKDAY_LABELS = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+
+function renderWeekdayPicker(selectedDays) {
+  const el = document.getElementById('plan-weekday-picker');
+  if(!el) return;
+  el.innerHTML = WEEKDAY_LABELS.map((label, idx) => `
+    <button type="button" onclick="toggleWeekday(${idx})" data-day="${idx}"
+      class="weekday-pill ${selectedDays.includes(idx)?'active':''}"
+      style="width:38px;height:38px;border-radius:50%;border:1px solid var(--border);background:${selectedDays.includes(idx)?'var(--accent-neon)':'var(--bg-3)'};color:${selectedDays.includes(idx)?'#0a0a0c':'var(--text-1)'};font-size:12px;font-weight:600;cursor:pointer">
+      ${label[0]}
+    </button>`).join('');
 }
 
-function deletePlan(id){
-  state.plans=state.plans.filter(p=>p.id!==id);
+function toggleWeekday(idx) {
+  const btn = document.querySelector(`#plan-weekday-picker button[data-day="${idx}"]`);
+  if(!btn) return;
+  const isActive = btn.classList.contains('active');
+  btn.classList.toggle('active');
+  btn.style.background = isActive ? 'var(--bg-3)' : 'var(--accent-neon)';
+  btn.style.color = isActive ? 'var(--text-1)' : '#0a0a0c';
+}
+
+function getSelectedWeekdays() {
+  return [...document.querySelectorAll('#plan-weekday-picker button.active')].map(b => parseInt(b.dataset.day));
+}
+
+function toggleRecurrenceFields() {
+  const checked = document.getElementById('plan-recurring-toggle')?.checked;
+  const box = document.getElementById('plan-recurrence-fields');
+  if(box) box.style.display = checked ? 'block' : 'none';
+  if(checked) {
+    // Pré-sélectionner le jour de la semaine de la date choisie
+    const dateVal = document.getElementById('plan-date')?.value;
+    if(dateVal) {
+      const d = new Date(dateVal + 'T12:00:00');
+      renderWeekdayPicker([d.getDay()]);
+    }
+  }
+}
+
+function toggleRecurEndFields() {
+  const type = document.getElementById('plan-recur-end-type')?.value;
+  document.getElementById('plan-recur-end-count').style.display = type === 'count' ? 'block' : 'none';
+  document.getElementById('plan-recur-end-date').style.display = type === 'date' ? 'block' : 'none';
+}
+
+// ── Génération des occurrences pour une série récurrente ──
+function generateRecurrenceOccurrences(startDateStr, weekdays, intervalWeeks, endType, endCount, endDate) {
+  const occurrences = [];
+  const start = new Date(startDateStr + 'T12:00:00');
+  const maxIterations = 500; // garde-fou
+  let count = 0;
+  let weekCursor = 0;
+
+  // On itère semaine par semaine (par pas de intervalWeeks), et pour chaque semaine concernée,
+  // on génère les jours correspondant aux weekdays sélectionnés, à partir de start.
+  const startOfStartWeek = new Date(start);
+  startOfStartWeek.setDate(start.getDate() - start.getDay()); // dimanche de la semaine de départ
+
+  for(let iter = 0; iter < maxIterations; iter++) {
+    const weekStart = new Date(startOfStartWeek);
+    weekStart.setDate(startOfStartWeek.getDate() + weekCursor * 7 * intervalWeeks);
+
+    for(const wd of weekdays.sort((a,b)=>a-b)) {
+      const occDate = new Date(weekStart);
+      occDate.setDate(weekStart.getDate() + wd);
+      if(occDate < start) continue; // avant la date de départ choisie
+
+      const occDateStr = formatDate(occDate);
+
+      if(endType === 'date' && endDate && occDateStr > endDate) {
+        return occurrences;
+      }
+
+      occurrences.push(occDateStr);
+      count++;
+
+      if(endType === 'count' && count >= endCount) {
+        return occurrences;
+      }
+      if(endType === 'never' && count >= 104) { // limite raisonnable : 2 ans
+        return occurrences;
+      }
+    }
+    weekCursor++;
+    if(weekCursor > 110) break; // garde-fou ~2 ans
+  }
+  return occurrences;
+}
+
+function savePlan() {
+  const editId = document.getElementById('plan-edit-id')?.value;
+  const editSeriesId = document.getElementById('plan-edit-series-id')?.value;
+  const date = document.getElementById('plan-date')?.value;
+  const title = document.getElementById('plan-title')?.value;
+  const type = document.getElementById('plan-type')?.value;
+  const timeSlot = document.getElementById('plan-time-slot')?.value || '';
+  const notes = document.getElementById('plan-notes')?.value || '';
+  const isRecurring = document.getElementById('plan-recurring-toggle')?.checked;
+
+  if(!date || !title) { showToast('⚠️ Date et titre requis', 'error'); return; }
+
+  // ── Mode édition d'une occurrence existante (ne touche pas aux autres) ──
+  if(editId) {
+    const plan = state.plans.find(p => p.id === editId);
+    if(plan) {
+      plan.date = date; plan.title = title; plan.type = type;
+      plan.timeSlot = timeSlot; plan.notes = notes;
+      saveState();
+      closeModal('modal-add-plan');
+      renderCalendar();
+      showToast('📅 Séance mise à jour', 'success');
+    }
+    return;
+  }
+
+  // ── Mode création récurrente ──
+  if(isRecurring) {
+    const weekdays = getSelectedWeekdays();
+    if(!weekdays.length) { showToast('⚠️ Sélectionnez au moins un jour de la semaine', 'error'); return; }
+
+    const intervalWeeks = parseInt(document.getElementById('plan-recur-interval')?.value) || 1;
+    const endType = document.getElementById('plan-recur-end-type')?.value || 'never';
+    const endCount = parseInt(document.getElementById('plan-recur-count')?.value) || 10;
+    const endDate = document.getElementById('plan-recur-until')?.value || null;
+
+    const occurrences = generateRecurrenceOccurrences(date, weekdays, intervalWeeks, endType, endCount, endDate);
+    if(!occurrences.length) { showToast('⚠️ Aucune occurrence générée, vérifiez les paramètres', 'error'); return; }
+
+    const seriesId = generateId();
+    occurrences.forEach(occDate => {
+      state.plans.push({
+        id: generateId(), seriesId, date: occDate, title, type, timeSlot, notes,
+        recurrence: { weekdays, intervalWeeks, endType, endCount, endDate }
+      });
+    });
+
+    saveState();
+    closeModal('modal-add-plan');
+    renderCalendar();
+    showToast('🔁 ' + occurrences.length + ' séances planifiées !', 'success');
+    return;
+  }
+
+  // ── Mode création simple (une seule séance) ──
+  state.plans.push({ id: generateId(), date, title, type, timeSlot, notes });
+  saveState();
+  closeModal('modal-add-plan');
+  renderCalendar();
+  showToast('📅 Séance planifiée', 'success');
+}
+
+function editPlan(id) {
+  const plan = state.plans.find(p => p.id === id);
+  if(!plan) return;
+  document.getElementById('plan-edit-id').value = plan.id;
+  document.getElementById('plan-edit-series-id').value = plan.seriesId || '';
+  setVal('plan-date', plan.date);
+  setVal('plan-title', plan.title);
+  setVal('plan-type', plan.type);
+  setVal('plan-time-slot', plan.timeSlot || '');
+  setVal('plan-notes', plan.notes || '');
+  // En édition d'une occurrence : masquer les options de récurrence (on modifie juste cette occurrence)
+  document.getElementById('plan-recurring-toggle').checked = false;
+  document.getElementById('plan-recurrence-section').style.display = plan.seriesId ? 'none' : 'block';
+  toggleRecurrenceFields();
+
+  const infoEl = document.getElementById('plan-day-info');
+  if(infoEl) infoEl.innerHTML = plan.seriesId
+    ? '<div class="badge badge-neon">🔁 Fait partie d\\'une série récurrente — seule cette occurrence sera modifiée</div>'
+    : '';
+
+  openModal('modal-add-plan');
+}
+
+function deletePlan(id, deleteSeries) {
+  const plan = state.plans.find(p => p.id === id);
+  if(!plan) return;
+
+  if(plan.seriesId && deleteSeries === undefined) {
+    // Demander à l'utilisateur s'il veut supprimer toute la série
+    if(confirm('Cette séance fait partie d\\'une série récurrente.\\n\\nOK = Supprimer TOUTE la série\\nAnnuler = Supprimer seulement cette occurrence')) {
+      state.plans = state.plans.filter(p => p.seriesId !== plan.seriesId);
+      saveState(); renderCalendar();
+      showToast('🗑 Série supprimée', 'success');
+    } else {
+      state.plans = state.plans.filter(p => p.id !== id);
+      saveState(); renderCalendar();
+      showToast('🗑 Occurrence supprimée', 'success');
+    }
+    return;
+  }
+
+  state.plans = state.plans.filter(p => p.id !== id);
   saveState(); renderCalendar();
+  showToast('🗑 Séance supprimée', 'success');
 }
 
 function renderPlanList() {
@@ -4136,13 +4539,13 @@ function renderPlanList() {
     return (a.timeSlot||'').localeCompare(b.timeSlot||'');
   }).slice(0,15);
   el.innerHTML=upcoming.length?upcoming.map(p=>`
-    <div class="exercise-entry" style="display:flex;justify-content:space-between;align-items:center">
+    <div class="exercise-entry" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="editPlan('${p.id}')">
       <div>
-        <div style="font-weight:600;font-size:13px">${p.title}</div>
+        <div style="font-weight:600;font-size:13px">${escapeHtml(p.title)} ${p.seriesId?'<span class="badge badge-neon" style="font-size:9px">🔁</span>':''}</div>
         <div class="text-muted text-sm">${formatDateFr(p.date)}${p.timeSlot?' · '+p.timeSlot:''} · ${p.type}</div>
-        ${p.notes?`<div class="text-muted text-sm">${p.notes}</div>`:''}
+        ${p.notes?`<div class="text-muted text-sm">${escapeHtml(p.notes)}</div>`:''}
       </div>
-      <button onclick="deletePlan('${p.id}')" class="btn btn-ghost btn-sm" style="color:var(--text-3)">×</button>
+      <button onclick="event.stopPropagation();deletePlan('${p.id}')" class="btn btn-ghost btn-sm" style="color:var(--text-3)">×</button>
     </div>`).join('')
   :'<div class="text-muted" style="padding:16px;text-align:center">Aucune séance planifiée</div>';
 }
