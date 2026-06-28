@@ -4502,7 +4502,7 @@ function editPlan(id) {
 
   const infoEl = document.getElementById('plan-day-info');
   if(infoEl) infoEl.innerHTML = plan.seriesId
-    ? '<div class="badge badge-neon">🔁 Fait partie d\\'une série récurrente — seule cette occurrence sera modifiée</div>'
+    ? '<div class="badge badge-neon">🔁 Fait partie d\'une série récurrente — seule cette occurrence sera modifiée</div>'
     : '';
 
   openModal('modal-add-plan');
@@ -4514,7 +4514,7 @@ function deletePlan(id, deleteSeries) {
 
   if(plan.seriesId && deleteSeries === undefined) {
     // Demander à l'utilisateur s'il veut supprimer toute la série
-    if(confirm('Cette séance fait partie d\\'une série récurrente.\\n\\nOK = Supprimer TOUTE la série\\nAnnuler = Supprimer seulement cette occurrence')) {
+    if(confirm('Cette séance fait partie d\'une série récurrente.\n\nOK = Supprimer TOUTE la série\nAnnuler = Supprimer seulement cette occurrence')) {
       state.plans = state.plans.filter(p => p.seriesId !== plan.seriesId);
       saveState(); renderCalendar();
       showToast('🗑 Série supprimée', 'success');
