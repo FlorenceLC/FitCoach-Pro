@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="description" content="FitCoach Pro - Suivi sportif & Coaching IA">
-  <meta name="theme-color" content="#0a0a0c">
+  <meta name="theme-color" content="#0b0b0c">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <title>FitCoach Pro</title>
   <link rel="stylesheet" href="css/style.css">
@@ -40,14 +40,13 @@
     <div class="nav-item" data-page="workout" onclick="navigateTo('workout');closeSidebar()"><span class="nav-icon">🏋️</span><span>Musculation</span></div>
     <div class="nav-item" data-page="running" onclick="navigateTo('running');closeSidebar()"><span class="nav-icon">🏃</span><span>Course</span></div>
     <div class="nav-item" data-page="swimming" onclick="navigateTo('swimming');closeSidebar()"><span class="nav-icon">🏊</span><span>Piscine</span></div>
-    <div class="nav-item" data-page="combat" onclick="navigateTo('combat');closeSidebar()"><span class="nav-icon">🥊</span><span>Combat</span></div>
+    <div class="nav-item" data-page="free" onclick="navigateTo('free');closeSidebar()"><span class="nav-icon">🏅</span><span>Entraînement libre</span></div>
   </div>
   <div class="sidebar-section">
     <div class="sidebar-section-label">Suivi</div>
     <div class="nav-item" data-page="steps" onclick="navigateTo('steps');closeSidebar()"><span class="nav-icon">👟</span><span>Pas</span></div>
     <div class="nav-item" data-page="analysis" onclick="navigateTo('analysis');closeSidebar()"><span class="nav-icon">📊</span><span>Analyse</span></div>
     <div class="nav-item" data-page="recovery" onclick="navigateTo('recovery');closeSidebar()"><span class="nav-icon">😴</span><span>Récupération</span></div>
-    <div class="nav-item" data-page="nutrition" onclick="navigateTo('nutrition');closeSidebar()"><span class="nav-icon">🥗</span><span>Nutrition</span></div>
     <div class="nav-item" data-page="gamification" onclick="navigateTo('gamification');closeSidebar()"><span class="nav-icon">🏆</span><span>Achievements</span></div>
   </div>
   <div class="sidebar-section">
@@ -92,7 +91,7 @@
       <div class="grid-4 mb-20">
         <div class="stat-widget card-fire" data-icon="🔥"><div class="stat-label">Streak</div><div class="stat-value text-fire"><span id="dash-streak">0</span><span class="stat-unit">j</span></div></div>
         <div class="stat-widget" data-icon="🏋️"><div class="stat-label">Musculation</div><div class="stat-value"><span id="dash-total-workouts">0</span></div></div>
-        <div class="stat-widget" data-icon="🏃"><div class="stat-label">Courses</div><div class="stat-value text-neon"><span id="dash-total-runs">0</span></div></div>
+        <div class="stat-widget" data-icon="🔥"><div class="stat-label">Calories dépensées</div><div class="stat-value text-neon"><span id="dash-kcal-today">0</span><span class="stat-unit">kcal</span></div><div class="text-muted text-sm" id="dash-kcal-week">~0 kcal / 7 j</div></div>
         <div class="stat-widget" data-icon="👟"><div class="stat-label">Pas aujourd'hui</div><div class="stat-value text-gold"><span id="dash-steps-today">—</span></div></div>
       </div>
       <div class="grid-2 mb-20" style="gap:20px">
@@ -110,7 +109,7 @@
             <div style="display:flex;flex-direction:column;gap:8px">
               <button class="btn btn-secondary w-full" onclick="navigateTo('workout');startNewWorkout()">🏋️ Séance muscu</button>
               <button class="btn btn-secondary w-full" onclick="navigateTo('running');openModal('modal-run')">🏃 Enregistrer course</button>
-              <button class="btn btn-secondary w-full" onclick="navigateTo('combat');openModal('modal-combat')">🥊 Séance combat</button>
+              <button class="btn btn-secondary w-full" onclick="navigateTo('free');openFreeModal()">🏅 Entraînement libre</button>
               <button class="btn btn-neon w-full" onclick="toggleAIPanel()">🤖 Parler à CoachIA</button>
             </div>
           </div>
@@ -136,7 +135,7 @@
           </div>
           <div class="card">
             <div class="section-header"><div class="section-title">Planning <span>IA</span></div><button class="btn btn-neon btn-sm" id="btn-ai-planning" onclick="getAIPlanning()">🤖 Planning IA</button></div>
-            <div id="planning-ai-result" style="display:none;background:rgba(0,229,255,0.05);border:1px solid rgba(0,229,255,0.2);border-radius:var(--radius-sm);padding:14px;font-size:13px;line-height:1.7;white-space:pre-wrap"></div>
+            <div id="planning-ai-result" style="display:none;background:rgba(216,216,220,0.05);border:1px solid rgba(216,216,220,0.2);border-radius:var(--radius-sm);padding:14px;font-size:13px;line-height:1.7;white-space:pre-wrap"></div>
           </div>
         </div>
       </div>
@@ -208,17 +207,17 @@
       <div class="card"><div class="section-title mb-16">Historique <span>piscine</span></div><div id="swim-history-list"></div></div>
     </div>
 
-    <!-- ════════ COMBAT ════════ -->
-    <div class="page" id="page-combat">
+    <!-- ════════ ENTRAÎNEMENT LIBRE ════════ -->
+    <div class="page" id="page-free">
       <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
-        <button class="btn btn-primary" onclick="openModal('modal-combat')">🥊 Enregistrer séance</button>
+        <button class="btn btn-primary" onclick="openFreeModal()">🏅 Nouvel entraînement libre</button>
       </div>
       <div class="grid-3 mb-20">
-        <div class="stat-widget" data-icon="🥊"><div class="stat-label">Total séances</div><div class="stat-value" id="combat-total">0</div></div>
-        <div class="stat-widget" data-icon="🔥"><div class="stat-label">Calories brûlées</div><div class="stat-value text-fire" id="combat-calories">0</div></div>
-        <div class="stat-widget" data-icon="⏱️"><div class="stat-label">Temps total</div><div class="stat-value text-gold" id="combat-time">0 min</div></div>
+        <div class="stat-widget" data-icon="🏅"><div class="stat-label">Séances</div><div class="stat-value" id="free-total">0</div></div>
+        <div class="stat-widget" data-icon="🔥"><div class="stat-label">Calories (~)</div><div class="stat-value text-fire" id="free-calories">0</div></div>
+        <div class="stat-widget" data-icon="⏱️"><div class="stat-label">Temps total</div><div class="stat-value text-gold" id="free-time">0 min</div></div>
       </div>
-      <div class="card"><div class="section-title mb-16">Historique <span>combat</span></div><div id="combat-history-list"></div></div>
+      <div class="card"><div class="section-title mb-16">Historique <span>libre</span></div><div id="free-history-list"></div></div>
     </div>
 
     <!-- ════════ STEPS ════════ -->
@@ -248,12 +247,13 @@
     <div class="page" id="page-analysis">
       <div class="card card-fire mb-20">
         <div class="section-header"><div class="section-title">Semaine <span>actuelle</span></div><button class="btn btn-neon btn-sm" id="btn-ai-analysis" onclick="getAIAnalysis()">🤖 Analyse IA</button></div>
-        <div class="grid-3 mb-16">
+        <div class="grid-4 mb-16">
           <div style="text-align:center"><div class="text-display text-fire" style="font-size:36px" id="week-sessions">0</div><div class="text-muted text-sm">Séances</div></div>
           <div style="text-align:center"><div class="text-display text-neon" style="font-size:36px" id="week-distance">0 km</div><div class="text-muted text-sm">Distance</div></div>
           <div style="text-align:center"><div class="text-display text-gold" style="font-size:36px" id="week-volume">0 kg</div><div class="text-muted text-sm">Volume muscu</div></div>
+          <div style="text-align:center"><div class="text-display text-neon" style="font-size:36px" id="week-kcal">0 kcal</div><div class="text-muted text-sm">Calories dépensées (~)</div></div>
         </div>
-        <div id="ai-analysis-result" style="display:none;background:rgba(0,229,255,0.05);border:1px solid rgba(0,229,255,0.2);border-radius:var(--radius-sm);padding:14px;font-size:13px;line-height:1.6;white-space:pre-wrap"></div>
+        <div id="ai-analysis-result" style="display:none;background:rgba(216,216,220,0.05);border:1px solid rgba(216,216,220,0.2);border-radius:var(--radius-sm);padding:14px;font-size:13px;line-height:1.6;white-space:pre-wrap"></div>
       </div>
       <div class="grid-2 mb-20">
         <div class="card"><div class="section-title mb-16">Volume <span>musculation</span> (30j)</div><div class="chart-container" style="height:200px"><canvas id="analysis-volume-chart"></canvas></div></div>
@@ -296,41 +296,6 @@
           <div class="card mb-16"><div class="section-title mb-16">Évolution</div><div class="chart-container" style="height:200px"><canvas id="recovery-chart"></canvas></div></div>
           <div class="card"><div class="section-title mb-12">Historique</div><div id="recovery-history"></div></div>
         </div>
-      </div>
-    </div>
-
-    <!-- ════════ NUTRITION ════════ -->
-    <div class="page" id="page-nutrition">
-      <div class="grid-2" style="gap:20px;align-items:start">
-        <div>
-          <div class="card mb-16">
-            <div class="section-title mb-16">Besoins <span>journaliers</span></div>
-            <div class="grid-2 mb-16" style="gap:12px">
-              <div class="stat-widget" style="padding:14px"><div class="stat-label">BMR</div><div class="text-display" style="font-size:26px" id="nutr-bmr">—</div><div class="text-muted text-sm">kcal repos</div></div>
-              <div class="stat-widget" style="padding:14px"><div class="stat-label">TDEE</div><div class="text-display text-fire" style="font-size:26px" id="nutr-tdee">—</div><div class="text-muted text-sm">kcal actif</div></div>
-            </div>
-            <div style="background:var(--bg-3);border-radius:var(--radius-sm);padding:16px;margin-bottom:16px">
-              <div style="display:flex;justify-content:space-between;margin-bottom:8px">
-                <span class="text-display" style="font-size:13px;letter-spacing:1px">OBJECTIF</span>
-                <span class="text-display text-fire" style="font-size:28px" id="nutr-calories">—</span>
-              </div>
-              <div class="grid-3" style="gap:8px;text-align:center">
-                <div><div class="text-green text-display" style="font-size:20px" id="nutr-protein">—</div><div class="text-muted text-sm">Protéines</div></div>
-                <div><div class="text-neon text-display" style="font-size:20px" id="nutr-carbs">—</div><div class="text-muted text-sm">Glucides</div></div>
-                <div><div class="text-gold text-display" style="font-size:20px" id="nutr-fat">—</div><div class="text-muted text-sm">Lipides</div></div>
-              </div>
-            </div>
-            <div class="form-label mb-6">Apport du jour</div>
-            <div class="progress-bar mb-4" style="height:10px"><div class="progress-fill green" id="nutr-today-pct" style="width:0%"></div></div>
-            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-2)"><span id="nutr-today-calories">0</span><span>kcal</span></div>
-            <div style="display:flex;gap:8px;margin-top:12px">
-              <button class="btn btn-primary" onclick="openModal('modal-nutrition-log')">+ Log repas</button>
-              <button class="btn btn-neon" id="btn-nutr-advice" onclick="getNutritionAdvice()">🤖 Recommandations IA</button>
-            </div>
-          </div>
-          <div id="nutr-ai-box" style="display:none" class="card card-neon"><div class="section-title mb-8 text-neon">🤖 Nutrition IA</div><div id="nutr-ai-result" style="font-size:13px;line-height:1.6;white-space:pre-wrap"></div></div>
-        </div>
-        <div class="card"><div class="section-title mb-16">Répartition <span>macros</span></div><div class="chart-container" style="height:280px"><canvas id="nutr-macro-chart"></canvas></div></div>
       </div>
     </div>
 
@@ -377,12 +342,12 @@
             </div>
           </div>
 
-          <div class="card" style="border-color:rgba(255,77,28,0.3)">
+          <div class="card" style="border-color:rgba(155,29,52,0.3)">
             <div class="section-title mb-12 text-fire">Zone <span>de danger</span></div>
             <div style="display:flex;flex-direction:column;gap:8px">
               <button class="btn btn-secondary w-full" onclick="exportData()">📤 Exporter JSON</button>
               <label class="btn btn-ghost w-full" style="justify-content:center;cursor:pointer">📥 Importer JSON<input type="file" accept=".json" style="display:none" onchange="importData(this.files[0])"></label>
-              <button class="btn btn-ghost w-full" style="border-color:rgba(255,77,28,0.4);color:var(--accent-fire)" onclick="resetAllData()">🗑️ Réinitialiser tout</button>
+              <button class="btn btn-ghost w-full" style="border-color:rgba(155,29,52,0.4);color:var(--accent-fire)" onclick="resetAllData()">🗑️ Réinitialiser tout</button>
             </div>
           </div>
         </div>
@@ -391,20 +356,25 @@
           <div class="card mb-16">
             <div class="section-title mb-16">Intelligence <span>Artificielle</span></div>
             <div class="form-group">
-              <label class="form-label">Clé API Mistral AI</label>
+              <label class="form-label">Clé API Gemini</label>
               <div style="display:flex;gap:8px">
-                <input type="password" id="set-apikey" class="form-input" placeholder="Collez votre clé Mistral ici">
-                <button class="btn btn-ghost" id="btn-test-key" onclick="testMistralKey()" style="white-space:nowrap">🔍 Tester</button>
+                <input type="password" id="set-apikey" class="form-input" placeholder="Collez votre clé Gemini ici">
+                <button class="btn btn-ghost" id="btn-test-key" onclick="testGeminiKey()" style="white-space:nowrap">🔍 Tester</button>
               </div>
-              <div id="api-test-result" style="display:none;margin-top:8px;padding:10px 12px;background:var(--bg-3);border-radius:var(--radius-sm);font-size:13px;line-height:1.5"></div>
-              <div class="text-muted text-sm mt-6">Obtenez une clé gratuite sur <a href="https://console.mistral.ai" target="_blank" style="color:var(--accent-neon)">console.mistral.ai</a> · L'app doit être servie via HTTP (pas file://) pour que l'IA fonctionne.</div>
             </div>
-            <button class="btn btn-neon w-full mt-8" onclick="saveSettings()">🔑 Sauvegarder la clé</button>
+            <div class="form-group">
+              <label class="form-label">Modèle Gemini</label>
+              <input type="text" id="set-gemini-model" class="form-input" placeholder="gemini-3.5-flash">
+              <div class="text-muted text-sm mt-6">Tu peux écrire n'importe quel identifiant de modèle (ex : gemini-3.5-flash).</div>
+            </div>
+            <div id="api-test-result" style="display:none;margin-top:8px;padding:10px 12px;background:var(--bg-3);border-radius:var(--radius-sm);font-size:13px;line-height:1.5"></div>
+            <div class="text-muted text-sm mt-6">Clé gratuite sur <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--accent-neon)">aistudio.google.com</a> · L'app doit être servie via HTTP (pas file://).</div>
+            <button class="btn btn-neon w-full mt-8" onclick="saveSettings()">🔑 Sauvegarder</button>
           </div>
 
           <div class="card mb-16">
             <div class="section-title mb-12">☁️ Sync <span>JSONBin.io</span></div>
-            <div style="background:rgba(0,229,255,0.05);border:1px solid rgba(0,229,255,0.15);border-radius:var(--radius-sm);padding:12px;margin-bottom:14px;font-size:12px;color:var(--text-1);line-height:1.7">
+            <div style="background:rgba(216,216,220,0.05);border:1px solid rgba(216,216,220,0.15);border-radius:var(--radius-sm);padding:12px;margin-bottom:14px;font-size:12px;color:var(--text-1);line-height:1.7">
               <strong>Configuration en 2 minutes :</strong><br>
               1. Créez un compte gratuit sur <a href="https://jsonbin.io" target="_blank" style="color:var(--accent-neon)">jsonbin.io</a><br>
               2. Allez dans <strong>API Keys</strong> → copiez votre <em>Master Key</em><br>
@@ -444,7 +414,7 @@
     <div class="mobile-nav-item" data-page="workout" onclick="navigateTo('workout')"><span class="mnav-icon">🏋️</span><span class="mnav-label">Muscu</span></div>
     <div class="mobile-nav-item" data-page="running" onclick="navigateTo('running')"><span class="mnav-icon">🏃</span><span class="mnav-label">Course</span></div>
     <div class="mobile-nav-item" data-page="analysis" onclick="navigateTo('analysis')"><span class="mnav-icon">📊</span><span class="mnav-label">Analyse</span></div>
-    <div class="mobile-nav-item" onclick="openSidebar()"><span class="mnav-icon">☰</span><span class="mnav-label">Menu</span></div>
+    <div class="mobile-nav-item" data-page="free" onclick="navigateTo('free')"><span class="mnav-icon">🏅</span><span class="mnav-label">Libre</span></div>
   </div>
 </nav>
 
@@ -478,7 +448,7 @@
   style="position:fixed;bottom:80px;right:16px;width:48px;height:48px;border-radius:50%;
          background:linear-gradient(135deg,var(--accent-neon),var(--accent-purple));
          color:white;font-size:20px;border:none;cursor:pointer;z-index:95;
-         box-shadow:0 4px 20px rgba(0,229,255,0.4);
+         box-shadow:0 4px 20px rgba(216,216,220,0.4);
          display:flex;align-items:center;justify-content:center;
          transition:transform 0.2s,box-shadow 0.2s">🤖</button>
 
@@ -507,23 +477,15 @@
       </div>
       <div class="form-group">
         <label class="form-label">Type</label>
-        <select class="form-select" id="workout-training-type" onchange="if(currentWorkout)currentWorkout.trainingType=this.value">
-          <option value="hypertrophie">Hypertrophie</option>
-          <option value="force">Force</option>
-          <option value="endurance">Endurance musculaire</option>
-          <option value="cardio">Cardio</option>
-          <option value="pliométrie">Pliométrie</option>
-          <option value="récupération">Récupération active</option>
-          <option value="général">Général</option>
-        </select>
+        <select class="form-select" id="workout-training-type" onchange="onTrainingTypeChange(this)"></select>
       </div>
     </div>
     <div id="active-workout-exercises" style="max-height:340px;overflow-y:auto"></div>
     <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
       <button class="btn btn-secondary" onclick="openModal('modal-add-exercise');renderExerciseSelector()">+ Exercice</button>
       <button class="btn btn-secondary" onclick="openWODMenu()">⚡ WOD</button>
-      <button class="btn btn-secondary" style="border-color:rgba(155,93,229,0.3);color:var(--accent-purple)" onclick="openEmomMenu()">⏱️ EMOM</button>
-      <button class="btn btn-secondary" style="border-color:rgba(0,229,255,0.3);color:var(--accent-neon)" onclick="openBlocMenu()">🔁 Bloc/Circuit</button>
+      <button class="btn btn-secondary" style="border-color:rgba(142,142,152,0.3);color:var(--accent-purple)" onclick="openEmomMenu()">⏱️ EMOM</button>
+      <button class="btn btn-secondary" style="border-color:rgba(216,216,220,0.3);color:var(--accent-neon)" onclick="openBlocMenu()">🔁 Bloc/Circuit</button>
       <button class="btn btn-ghost btn-sm" onclick="saveCurrentAsTemplate()">💾 Sauver comme programme</button>
       <button class="btn btn-ghost btn-sm" onclick="openModal('modal-timer')">⏱️ Timer</button>
     </div>
@@ -632,7 +594,7 @@
       <div class="modal-title">⏱️ Créer un EMOM</div>
       <button class="modal-close" onclick="closeModal('modal-add-emom')">✕</button>
     </div>
-    <div style="background:rgba(155,93,229,0.06);border:1px solid rgba(155,93,229,0.2);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:16px;font-size:12px;color:var(--text-1);line-height:1.6">
+    <div style="background:rgba(142,142,152,0.06);border:1px solid rgba(142,142,152,0.2);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:16px;font-size:12px;color:var(--text-1);line-height:1.6">
       EMOM = "Every Minute On the Minute". Définissez le nombre de minutes, puis ajoutez un ou plusieurs exercices à réaliser à chaque minute.
     </div>
     <div class="form-group">
@@ -687,7 +649,7 @@
       <div class="modal-title">🔁 Créer un bloc / circuit</div>
       <button class="modal-close" onclick="closeModal('modal-add-bloc')">✕</button>
     </div>
-    <div style="background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.2);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:16px;font-size:12px;color:var(--text-1);line-height:1.6">
+    <div style="background:rgba(216,216,220,0.06);border:1px solid rgba(216,216,220,0.2);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:16px;font-size:12px;color:var(--text-1);line-height:1.6">
       Un bloc regroupe plusieurs exercices à enchaîner <strong>X fois</strong>.<br>
       Exemple : Traction + Développé couché × 4 rounds.
     </div>
@@ -735,15 +697,7 @@
   <div class="modal">
     <div class="modal-header"><div class="modal-title">🤖 Générer une séance</div><button class="modal-close" onclick="closeModal('modal-ai-generate')">✕</button></div>
     <div class="form-group"><label class="form-label">Type d'entraînement</label>
-      <select id="ai-workout-type" class="form-select">
-        <option value="hypertrophie">Hypertrophie (volume)</option>
-        <option value="force">Force (lourd)</option>
-        <option value="endurance musculaire">Endurance musculaire</option>
-        <option value="full body">Full Body</option>
-        <option value="push">Push (pectoraux, épaules, triceps)</option>
-        <option value="pull">Pull (dos, biceps)</option>
-        <option value="jambes">Jambes</option>
-      </select>
+      <select id="ai-workout-type" class="form-select" onchange="onTrainingTypeChange(this)"></select>
     </div>
     <div class="form-group"><label class="form-label">Durée (minutes)</label><input type="number" id="ai-workout-duration" class="form-input" value="60" min="20" max="180"></div>
     <div class="modal-footer">
@@ -831,7 +785,7 @@
     <div class="modal-header"><div class="modal-title">🏃 Course à pied</div><button class="modal-close" onclick="closeModal('modal-run')">✕</button></div>
 
     <!-- Import Coros -->
-    <div style="background:rgba(0,229,255,0.05);border:1px solid rgba(0,229,255,0.2);border-radius:var(--radius-sm);padding:12px;margin-bottom:16px">
+    <div style="background:rgba(216,216,220,0.05);border:1px solid rgba(216,216,220,0.2);border-radius:var(--radius-sm);padding:12px;margin-bottom:16px">
       <div class="form-label mb-6">🔗 Importer depuis Coros</div>
       <div style="display:flex;gap:6px;margin-bottom:8px">
         <input type="text" id="coros-link" class="form-input" placeholder="Collez le lien de partage Coros..." style="flex:1;font-size:12px">
@@ -981,40 +935,29 @@
   </div>
 </div>
 
-<!-- Combat Modal -->
-<div class="modal-overlay" id="modal-combat">
+<!-- Free training Modal -->
+<div class="modal-overlay" id="modal-free">
   <div class="modal">
-    <div class="modal-header"><div class="modal-title">🥊 Séance Combat</div><button class="modal-close" onclick="closeModal('modal-combat')">✕</button></div>
-    <div class="form-row">
-      <div class="form-group"><label class="form-label">Sport</label>
-        <select id="combat-sport" class="form-select" id="combat-sport-select" onchange="updateCombatTypes()">
-          <option value="Krav Maga">Krav Maga</option>
-          <option value="Boxe">Boxe</option>
-          <option value="MMA">MMA</option>
-          <option value="Muay Thai">Muay Thai</option>
-          <option value="Jiu-Jitsu">Jiu-Jitsu</option>
-        </select>
-      </div>
-      <div class="form-group"><label class="form-label">Type</label>
-        <select id="combat-type" class="form-select">
-          <option value="technique">Technique</option>
-          <option value="sparring">Sparring / Combat</option>
-          <option value="cardio">Cardio</option>
-          <option value="renforcement">Renforcement musculaire</option>
-          <option value="etirements">Étirements / Souplesse</option>
-          <option value="mixte">Mixte (tout)</option>
-        </select>
-      </div>
+    <div class="modal-header"><div class="modal-title">🏅 Entraînement libre</div><button class="modal-close" onclick="closeModal('modal-free')">✕</button></div>
+    <div class="form-group"><label class="form-label">Sport</label>
+      <select id="free-sport" class="form-select" onchange="onFreeSportChange()"></select>
+    </div>
+    <div class="form-group" id="free-sport-new-box" style="display:none">
+      <label class="form-label">Nom du nouveau sport</label>
+      <input type="text" id="free-sport-new" class="form-input" placeholder="Ex: Escalade, Tennis, Rando...">
     </div>
     <div class="form-row">
-      <div class="form-group"><label class="form-label">Durée (min)</label><input type="number" id="combat-duration" class="form-input" placeholder="60"></div>
-      <div class="form-group"><label class="form-label">Intensité (1-10)</label><input type="number" id="combat-intensity" class="form-input" value="7" min="1" max="10"></div>
+      <div class="form-group"><label class="form-label">Durée (min)</label><input type="number" id="free-duration" class="form-input" placeholder="60"></div>
+      <div class="form-group"><label class="form-label">Intensité (1-10)</label><input type="number" id="free-intensity" class="form-input" value="6" min="1" max="10"></div>
     </div>
-    <div class="form-group"><label class="form-label">Date</label><input type="date" id="combat-date" class="form-input"></div>
-    <div class="form-group"><label class="form-label">Notes</label><textarea id="combat-notes" class="form-textarea" placeholder="Techniques travaillées, ressentis..."></textarea></textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Date</label><input type="date" id="free-date" class="form-input"></div>
+      <div class="form-group"><label class="form-label">Calories (optionnel)</label><input type="number" id="free-kcal" class="form-input" placeholder="Auto"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Description</label><textarea id="free-desc" class="form-textarea" placeholder="Ce que tu as fait, ressentis, partenaires..."></textarea></div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-combat')">Annuler</button>
-      <button class="btn btn-primary" onclick="saveCombat()">💾 Enregistrer</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-free')">Annuler</button>
+      <button class="btn btn-primary" onclick="saveFree()">💾 Enregistrer</button>
     </div>
   </div>
 </div>
@@ -1096,32 +1039,6 @@
   </div>
 </div>
 
-<!-- Nutrition Log Modal -->
-<div class="modal-overlay" id="modal-nutrition-log">
-  <div class="modal">
-    <div class="modal-header"><div class="modal-title">🥗 Log du jour</div><button class="modal-close" onclick="closeModal('modal-nutrition-log')">✕</button></div>
-    <!-- IA : estimation depuis description -->
-    <div style="background:rgba(0,229,255,0.05);border:1px solid rgba(0,229,255,0.2);border-radius:var(--radius-sm);padding:12px;margin-bottom:16px">
-      <div class="form-label mb-6">🤖 Estimation IA depuis votre assiette</div>
-      <textarea id="nutr-plate-desc" class="form-textarea" rows="2" placeholder="Ex: 150g de poulet grillé, 200g de riz, salade verte, filet d'huile d'olive..."></textarea>
-      <button class="btn btn-neon btn-sm w-full mt-8" id="btn-estimate-calories" onclick="estimateCaloriesFromPlate()">
-        🤖 Estimer les calories
-      </button>
-      <div id="nutr-estimate-result" style="display:none;margin-top:8px;font-size:12px;color:var(--accent-green);line-height:1.5"></div>
-    </div>
-    <div class="form-group"><label class="form-label">Calories totales</label><input type="number" id="nutr-log-calories" class="form-input" placeholder="2500"></div>
-    <div class="form-row">
-      <div class="form-group"><label class="form-label">Protéines (g)</label><input type="number" id="nutr-log-protein" class="form-input" placeholder="180"></div>
-      <div class="form-group"><label class="form-label">Glucides (g)</label><input type="number" id="nutr-log-carbs" class="form-input" placeholder="280"></div>
-      <div class="form-group"><label class="form-label">Lipides (g)</label><input type="number" id="nutr-log-fat" class="form-input" placeholder="80"></div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-nutrition-log')">Annuler</button>
-      <button class="btn btn-primary" onclick="saveNutritionLog()">💾 Enregistrer</button>
-    </div>
-  </div>
-</div>
-
 <!-- Edit Template Modal -->
 <div class="modal-overlay" id="modal-edit-template">
   <div class="modal" style="max-width:620px">
@@ -1137,13 +1054,7 @@
       </div>
       <div class="form-group">
         <label class="form-label">Type</label>
-        <select id="edit-tpl-type" class="form-select">
-          <option value="hypertrophie">Hypertrophie</option>
-          <option value="force">Force</option>
-          <option value="endurance">Endurance musculaire</option>
-          <option value="cardio">Cardio</option>
-          <option value="général">Général</option>
-        </select>
+        <select id="edit-tpl-type" class="form-select" onchange="onTrainingTypeChange(this)"></select>
       </div>
     </div>
     <div id="edit-tpl-items" style="max-height:460px;overflow-y:auto"></div>
@@ -1213,7 +1124,8 @@ function defaultState() {
       goal:'muscle', activity:'moderate',
       level:1, xp:0, streak:0,
       lastWorkoutDate:null, badges:[],
-      apiKey:''
+      apiKey:'',
+      geminiModel:'gemini-3.5-flash'
     },
     workouts: [],
     workout_templates: [],
@@ -1222,9 +1134,10 @@ function defaultState() {
     plans: [],
     runs: [],
     swims: [],
-    combats: [],
+    freeSessions: [],
+    free_sports: ['Boxe','Krav Maga','Marche','Vélo','Padel'],
+    training_types: ['Force','Volume','Masse'],
     recovery: [],
-    nutrition: [],
     steps: [],
     chatConversations: [],  // historique des conversations CoachIA
     wod_library: [],          // WODs sauvegardés réutilisables
@@ -1241,6 +1154,14 @@ let state = (() => {
     for (const k of Object.keys(def)) {
       if (!(k in loaded)) loaded[k] = def[k];
     }
+    // Migration : anciennes séances de combat -> entraînements libres
+    if (Array.isArray(loaded.combats) && loaded.combats.length) {
+      loaded.combats.forEach(c => loaded.freeSessions.push({id:c.id, date:c.date, sport:c.sport||'Combat',
+        description:[c.type,c.notes].filter(Boolean).join(' — '), duration:c.duration||0, intensity:c.intensity||6, calories:c.calories||null}));
+    }
+    delete loaded.combats; delete loaded.nutrition;
+    if (!loaded.profile.geminiModel) loaded.profile.geminiModel = 'gemini-3.5-flash';
+    loaded.profile.apiKey = loaded.profile.apiKey || '';
     return loaded;
   } catch { return defaultState(); }
 })();
@@ -1345,7 +1266,16 @@ async function loadFromCloud() {
     const def = defaultState();
     for (const k of Object.keys(def)) { if (!(k in merged)) merged[k] = def[k]; }
 
+    // Migration : anciennes données combat -> entraînements libres
+    const oldCombats = (remote.combats||[]).concat(local?.combats||[]);
+    oldCombats.forEach(c => {
+      if(!merged.freeSessions.some(f=>f.id===c.id))
+        merged.freeSessions.push({id:c.id, date:c.date, sport:c.sport||'Combat', description:[c.type,c.notes].filter(Boolean).join(' — '), duration:c.duration||0, intensity:c.intensity||6, calories:c.calories||null});
+    });
+    delete merged.combats; delete merged.nutrition;
+    if(!merged.profile.geminiModel) merged.profile.geminiModel = 'gemini-3.5-flash';
     Object.assign(state, merged);
+    delete state.combats; delete state.nutrition;
     localStorage.setItem(DB_KEY, JSON.stringify(state));
     _updateSyncIndicator(true);
     return true;
@@ -1475,8 +1405,7 @@ const ACHIEVEMENTS = [
   {id:'run_10k',         icon:'🏃',label:'10K Club',      desc:'Course de 10 km'},
   {id:'level_5',         icon:'⭐',label:'Niveau 5',      desc:'Atteindre niveau 5'},
   {id:'hundred_sessions',icon:'💯',label:'Centenaire',    desc:'100 séances'},
-  {id:'combat_10',       icon:'🥊',label:'Combattant',    desc:'10 séances combat'},
-  {id:'nutrition_week',  icon:'🥗',label:'Nutritioniste', desc:'7 jours nutrition'},
+  {id:'free_10',         icon:'🏅',label:'Polyvalent',    desc:'10 entraînements libres'},
   {id:'swimmer',         icon:'🏊',label:'Nageur',        desc:'Première piscine'},
   {id:'steps_10k',       icon:'👟',label:'10 000 pas',    desc:'10 000 pas en un jour'},
 ];
@@ -1494,8 +1423,7 @@ function checkAchievements() {
   if(s>=30) unlockAchievement('streak_30');
   if(state.profile.level>=5) unlockAchievement('level_5');
   if(t>=100) unlockAchievement('hundred_sessions');
-  if(state.combats.length>=10) unlockAchievement('combat_10');
-  if(state.nutrition.length>=7) unlockAchievement('nutrition_week');
+  if((state.freeSessions||[]).length>=10) unlockAchievement('free_10');
   if(state.runs.some(r=>r.distance>=10)) unlockAchievement('run_10k');
   if((state.swims||[]).length>=1) unlockAchievement('swimmer');
   if((state.steps||[]).some(s=>s.steps>=10000)) unlockAchievement('steps_10k');
@@ -1548,8 +1476,8 @@ function fixLibraryMuscleNames() {
 }
 
 const MUSCLE_COLORS = {
-  'Pectoraux':'#ff4d1c','Dos':'#00e5ff','Épaules':'#ffd166',
-  'Biceps':'#06d6a0','Triceps':'#9b5de5','Quadriceps':'#f72585',
+  'Pectoraux':'#9b1d34','Dos':'#d8d8dc','Épaules':'#b5485d',
+  'Biceps':'#bfc0c6','Triceps':'#8e8e98','Quadriceps':'#f72585',
   'Ischio-jambiers':'#4cc9f0','Mollets':'#7209b7',
   'Abdominaux':'#3a86ff','Fessiers':'#fb5607',
 };
@@ -2142,8 +2070,8 @@ function navigateTo(pageId) {
   if(page) page.classList.add('active');
   document.querySelectorAll(`[data-page="${pageId}"]`).forEach(n=>n.classList.add('active'));
   const titles = {dashboard:'Dashboard',workout:'Musculation',running:'Course à pied',
-    swimming:'Piscine',combat:'Sports de Combat',analysis:'Analyse & Progression',
-    recovery:'Récupération',nutrition:'Nutrition',gamification:'Achievements',
+    swimming:'Piscine',free:'Entraînement libre',analysis:'Analyse & Progression',
+    recovery:'Récupération',gamification:'Achievements',
     planning:'Planification',steps:'Pas journaliers',settings:'Paramètres'};
   setText('header-title', titles[pageId]||pageId);
   if(pageId==='dashboard') renderDashboard();
@@ -2151,10 +2079,9 @@ function navigateTo(pageId) {
   if(pageId==='gamification') renderGamification();
   if(pageId==='planning') renderCalendar();
   if(pageId==='recovery') renderRecovery();
-  if(pageId==='nutrition') renderNutrition();
   if(pageId==='workout') { renderWorkoutHistory(); renderWorkoutTemplates(); }
   if(pageId==='running') renderRunHistory();
-  if(pageId==='combat') renderCombatHistory();
+  if(pageId==='free') renderFreeHistory();
   if(pageId==='swimming') renderSwimHistory();
   if(pageId==='steps') renderStepsHistory();
   if(pageId==='settings') renderSettings();
@@ -2177,7 +2104,7 @@ function updateHeaderDate() {
 // 3. AI MODULE
 // ════════════════════════════════════════════════════════════
 // ============================================================
-// FITCOACH PRO - AI Module (Mistral API)
+// FITCOACH PRO - AI Module (Gemini API)
 // ============================================================
 
 // ── Convertit le markdown en texte lisible ──
@@ -2196,37 +2123,42 @@ function stripMarkdown(text) {
 const AI = {
 
   // Appel central — signature : (systemPrompt string, userContent string)
-  async _call(systemPrompt, userContent) {
+  // Appel Gemini central (REST generateContent)
+  async _gemini(systemPrompt, contents, temperature=0.7) {
     const key = (state.profile.apiKey || '').trim();
-    if (!key) return '⚠️ Clé API Mistral manquante. Configurez-la dans Paramètres.';
+    if (!key) return { error: '⚠️ Clé API Gemini manquante. Configurez-la dans Paramètres.' };
+    const model = (state.profile.geminiModel || 'gemini-3.5-flash').trim();
     try {
-      const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
+      const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(model) + ':generateContent', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + key
-        },
+        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
         body: JSON.stringify({
-          model: 'mistral-large-latest',
-          temperature: 0.7,
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user',   content: userContent  }
-          ]
+          systemInstruction: { parts: [{ text: systemPrompt }] },
+          contents,
+          generationConfig: { temperature }
         })
       });
       if (!response.ok) {
         let msg = response.statusText;
-        try { const j = await response.json(); msg = j.message || j.error?.message || msg; } catch {}
-        if (response.status === 401) return '❌ Clé API invalide. Vérifiez dans Paramètres.';
-        if (response.status === 429) return '⏳ Quota atteint. Patientez quelques secondes.';
-        return '❌ Erreur ' + response.status + ' : ' + msg;
+        try { const j = await response.json(); msg = j.error?.message || msg; } catch {}
+        if (response.status === 400 && /API key/i.test(msg)) return { error: '❌ Clé API invalide. Vérifiez dans Paramètres.' };
+        if (response.status === 403) return { error: '❌ Clé refusée (403). Vérifiez la clé dans Paramètres.' };
+        if (response.status === 404) return { error: '❌ Modèle "' + model + '" introuvable. Vérifiez son nom dans Paramètres.' };
+        if (response.status === 429) return { error: '⏳ Quota atteint. Patientez quelques secondes.' };
+        return { error: '❌ Erreur ' + response.status + ' : ' + msg };
       }
       const data = await response.json();
-      return (data.choices?.[0]?.message?.content || '(Réponse vide)').trim();
+      const text = (data.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('').trim();
+      return { text: text || '(Réponse vide)' };
     } catch(e) {
-      return '❌ ' + (e.message?.includes('fetch') ? 'Réseau inaccessible. Ouvrez l\'app via http://' : e.message);
+      return { error: '❌ ' + (e.message?.includes('fetch') ? 'Réseau inaccessible. Ouvrez l\'app via http://' : e.message) };
     }
+  },
+
+  // Appel simple — signature : (systemPrompt string, userContent string)
+  async _call(systemPrompt, userContent) {
+    const r = await this._gemini(systemPrompt, [{ role: 'user', parts: [{ text: userContent }] }]);
+    return r.error || r.text;
   },
 
   // Prompt système de base avec contexte utilisateur
@@ -2250,42 +2182,23 @@ const AI = {
 
   // Chat multi-tours avec historique
   async chat(msg, history=[]) {
-    const key = (state.profile.apiKey || '').trim();
-    if (!key) return '⚠️ Clé API Mistral manquante. Configurez-la dans Paramètres.';
-    try {
-      const messages = [
-        { role: 'system', content: this._system() + '\n\nNe formate PAS en markdown. Pas de **gras**, pas de # titres. Texte simple uniquement.' },
-        ...history.slice(-10)
-          .filter(m => m.role === 'user' || m.role === 'assistant')
-          .map(m => ({ role: m.role, content: String(m.content || '') })),
-        { role: 'user', content: msg }
-      ];
-      const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
-        body: JSON.stringify({ model: 'mistral-large-latest', temperature: 0.7, messages })
-      });
-      if (!response.ok) {
-        let msg2 = response.statusText;
-        try { const j = await response.json(); msg2 = j.message || msg2; } catch {}
-        return '❌ Erreur ' + response.status + ' : ' + msg2;
-      }
-      const data = await response.json();
-      return stripMarkdown((data.choices?.[0]?.message?.content || '(Réponse vide)').trim());
-    } catch(e) { return '❌ ' + e.message; }
+    const system = this._system() + '\n\nNe formate PAS en markdown. Pas de **gras**, pas de # titres. Texte simple uniquement.';
+    const contents = [
+      ...history.slice(-10)
+        .filter(m => m.role === 'user' || m.role === 'assistant')
+        .map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: String(m.content || '') }] })),
+      { role: 'user', parts: [{ text: msg }] }
+    ];
+    // Gemini exige que la conversation commence par un message utilisateur
+    while (contents.length > 1 && contents[0].role !== 'user') contents.shift();
+    const r = await this._gemini(system, contents);
+    return r.error || stripMarkdown(r.text);
   },
 
   // Résumé hebdomadaire
   async weeklySummary() {
     return stripMarkdown(await this._call(this._system(),
       'Fais un résumé de mes entraînements cette semaine en 4-5 phrases : bilan global, point fort, point à améliorer, conseil pour la semaine prochaine.'));
-  },
-
-  // Conseils nutrition
-  async nutritionAdvice() {
-    const p = state.profile;
-    return stripMarkdown(await this._call(this._system(),
-      'Donne-moi mes besoins nutritionnels. BMR: ' + calcBMR(p) + ', TDEE: ' + calcTDEE(p) + ', objectif: ' + p.goal + '. Inclus les calories cibles et les macros en grammes (protéines, glucides, lipides).'));
   },
 
   // Conseils récupération
@@ -2310,7 +2223,7 @@ const AI = {
 
   // Génération de séance musculation (JSON)
   async generateWorkout(type, muscles, duration) {
-    type = type || 'hypertrophie'; duration = duration || 60;
+    type = type || 'Masse'; duration = duration || 60;
     const system = 'Tu es coach de musculation. Réponds UNIQUEMENT avec du JSON valide, sans texte autour, sans markdown, sans backticks.';
     const user = 'Génère une séance de musculation. Type: ' + type + '. Muscles: ' + (muscles?.join(',')||'selon progression') + '. Durée: ' + duration + 'min. Niveau: ' + state.profile.level + '.\nFormat JSON exact (sans rien autour):\n{"title":"...","trainingType":"' + type + '","exercises":[{"name":"...","muscle":"...","sets":3,"reps":"8-10","rest":90,"notes":"..."}]}';
     const resp = await this._call(system, user);
@@ -2329,7 +2242,7 @@ const AI = {
   async parseWorkoutFromText(text) {
     const system = 'Tu es un assistant de fitness expert. Tu analyses du texte décrivant une séance de sport et tu extrais les données structurées. Réponds UNIQUEMENT avec du JSON valide, sans texte autour, sans markdown.';
     const user = 'Analyse ce texte décrivant une séance de sport et extrais les données :\n' + text
-      + '\n\nRetourne ce JSON exact :\n{"detected": true, "title": "...", "date": "YYYY-MM-DD ou null", "type": "musculation|course|combat|natation", "duration": null, "trainingType": "hypertrophie|force|endurance|général", "exercises": [{"name": "...", "muscle": "...", "sets": [{"reps": "...", "weight": "...", "rest": 0}]}], "runs": {"distance": null, "time": "MM:SS", "pace": null, "notes": "..."}}\nSi ce n\'est pas une séance sportive, retourne {"detected": false}';
+      + '\n\nRetourne ce JSON exact :\n{"detected": true, "title": "...", "date": "YYYY-MM-DD ou null", "type": "musculation|course|natation", "duration": null, "trainingType": "hypertrophie|force|endurance|général", "exercises": [{"name": "...", "muscle": "...", "sets": [{"reps": "...", "weight": "...", "rest": 0}]}], "runs": {"distance": null, "time": "MM:SS", "pace": null, "notes": "..."}}\nSi ce n\'est pas une séance sportive, retourne {"detected": false}';
     const resp = await this._call(system, user);
     try {
       const json = resp.match(/\{[\s\S]*\}/)?.[0];
@@ -2349,15 +2262,6 @@ const AI = {
       return json ? JSON.parse(json) : { detected: false };
     } catch { return { detected: false }; }
   },
-
-  async estimatePlateCalories(description) {
-    const system = 'Tu es un nutritionniste expert. Analyse la description d\'un repas et estime les valeurs nutritionnelles. Réponds en français, en texte simple sans markdown.';
-    const user = 'Estime les valeurs nutritionnelles approximatives de ce repas : ' + description
-      + '\n\nDonne : calories totales (kcal), protéines (g), glucides (g), lipides (g). '
-      + 'Sois précis dans ton estimation. Format : "Estimation : environ X kcal | Protéines : Xg | Glucides : Xg | Lipides : Xg"'
-      + '\nAjoute une ligne d\'explication brève sur les aliments les plus caloriques.';
-    return await this._call(system, user);
-  }
 };
 // ════════════════════════════════════════════════════════════
 // 4. PAGES & LOGIC
@@ -2384,14 +2288,14 @@ function renderDashboard() {
   setText('dash-xp-next', `${xpNext} XP`);
   setText('dash-streak', p.streak);
   setText('dash-total-workouts', state.workouts.length);
-  setText('dash-total-runs', state.runs.length);
-  setText('dash-total-combat', state.combats.length);
+  setText('dash-kcal-today', calcBurnedCalories(today(),today()).toLocaleString());
+  setText('dash-kcal-week', '~'+calcBurnedCalories(formatDate(new Date(Date.now()-6*86400000)),today()).toLocaleString()+' kcal / 7 j');
 
   const wAgo = formatDate(new Date(Date.now()-7*86400000));
   setText('dash-week-sessions',
     state.workouts.filter(w=>w.date>=wAgo).length +
     state.runs.filter(r=>r.date>=wAgo).length +
-    state.combats.filter(c=>c.date>=wAgo).length +
+    (state.freeSessions||[]).filter(c=>c.date>=wAgo).length +
     (state.swims||[]).filter(s=>s.date>=wAgo).length);
 
   // Today's steps
@@ -2402,7 +2306,7 @@ function renderDashboard() {
   const all = [
     ...state.workouts.map(w=>({...w,_type:'workout'})),
     ...state.runs.map(r=>({...r,_type:'run'})),
-    ...(state.combats||[]).map(c=>({...c,_type:'combat'})),
+    ...(state.freeSessions||[]).map(c=>({...c,title:c.sport,_type:'free'})),
     ...(state.swims||[]).map(s=>({...s,_type:'swim'})),
   ].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,6);
 
@@ -2440,7 +2344,7 @@ function renderDashboard() {
     .reduce((s,w)=>s+(w.exercises||[]).reduce((ss,ex)=>ss+calcVolume(ex.sets||[]),0),0));
   createBarChart('dash-volume-chart', days7.map(d=>d.slice(5).replace('-','/')), [{
     label:'Volume (kg)', data:volData,
-    backgroundColor:'rgba(255,77,28,0.6)', borderColor:'#ff4d1c',
+    backgroundColor:'rgba(155,29,52,0.6)', borderColor:'#9b1d34',
     borderRadius:4, borderWidth:1
   }]);
 }
@@ -2448,7 +2352,7 @@ function renderDashboard() {
 function actIcon(w) {
   if(w._type==='run'||w.distance) return '🏃';
   if(w._type==='swim') return '🏊';
-  if(w._type==='combat'||w.sport) return '🥊';
+  if(w._type==='free'||w.sport) return '🏅';
   return '🏋️';
 }
 
@@ -2510,7 +2414,7 @@ function editTemplate(id) {
   // Charger le template dans la modale d'édition
   document.getElementById('edit-tpl-id').value = id;
   document.getElementById('edit-tpl-title').value = tpl.title;
-  document.getElementById('edit-tpl-type').value = tpl.trainingType||'général';
+  populateTrainingTypes(tpl.trainingType); document.getElementById('edit-tpl-type').value = tpl.trainingType||'Masse';
   renderEditTemplateItems(tpl);
   openModal('modal-edit-template');
 }
@@ -2523,7 +2427,7 @@ function renderEditTemplateItems(tpl) {
   el.innerHTML = items.map((item, ii) => {
     if(item.type === 'emom') {
       const minutes = item.exercisesByMinute || [];
-      return `<div style="background:var(--bg-3);border:1px solid rgba(155,93,229,0.25);border-radius:8px;padding:10px 12px;margin-bottom:8px">
+      return `<div style="background:var(--bg-3);border:1px solid rgba(142,142,152,0.25);border-radius:8px;padding:10px 12px;margin-bottom:8px">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
           <span style="color:var(--accent-purple);font-weight:700">⏱️ EMOM</span>
           <input type="text" value="${item.name||''}" placeholder="Nom" class="form-input" style="font-size:12px;padding:4px 8px;flex:1"
@@ -2553,7 +2457,7 @@ function renderEditTemplateItems(tpl) {
       </div>`;
     }
     if(item.type === 'bloc') {
-      return `<div style="background:var(--bg-3);border:1px solid rgba(0,229,255,0.2);border-radius:8px;padding:10px 12px;margin-bottom:8px">
+      return `<div style="background:var(--bg-3);border:1px solid rgba(216,216,220,0.2);border-radius:8px;padding:10px 12px;margin-bottom:8px">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
           <span style="color:var(--accent-neon);font-weight:700">🔁 ${item.name}</span>
           <input type="number" value="${item.rounds||3}" min="1" max="20"
@@ -2583,7 +2487,7 @@ function renderEditTemplateItems(tpl) {
     }
     if(item.type === 'wod') {
       if(!item.sets || !item.sets.length) item.sets = [{rounds:'1',weight:'',rest:0}];
-      return `<div style="background:var(--bg-3);border:1px solid rgba(255,209,102,0.2);border-radius:8px;padding:10px 12px;margin-bottom:8px">
+      return `<div style="background:var(--bg-3);border:1px solid rgba(181,72,93,0.2);border-radius:8px;padding:10px 12px;margin-bottom:8px">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
           <span style="color:var(--accent-gold);font-weight:700">⚡ WOD</span>
           <input type="text" value="${item.name}" placeholder="Nom" class="form-input" style="font-size:12px;padding:4px 8px;flex:1"
@@ -2678,7 +2582,7 @@ function saveCurrentAsTemplate() {
   if(!name) return;
   const tpl = {
     id: generateId(), title: name,
-    trainingType: currentWorkout.trainingType||'général',
+    trainingType: currentWorkout.trainingType||'Masse',
     items: (currentWorkout.items||[]).map(item => {
       if(item.type === 'bloc') return {...item, exercises:(item.exercises||[]).map(ex=>({...ex, sets:(ex.sets||[]).map(s=>({reps:s.reps,weight:s.weight,rest:s.rest||90}))}))};
       if(item.type === 'emom') return {...item, exercisesByMinute: JSON.parse(JSON.stringify(item.exercisesByMinute||[]))};
@@ -2736,7 +2640,7 @@ function loadTemplate(id) {
 
   document.getElementById('active-workout-title').textContent = currentWorkout.title;
   document.getElementById('workout-title-input').value = currentWorkout.title;
-  setVal('workout-training-type', currentWorkout.trainingType||'hypertrophie');
+  populateTrainingTypes(currentWorkout.trainingType); setVal('workout-training-type', currentWorkout.trainingType||'Masse');
   renderActiveWorkout();
   openModal('modal-workout');
   showToast('📋 Programme chargé avec les dernières données','info');
@@ -2794,13 +2698,13 @@ function startNewWorkout() {
   _addingToBlocIndex = null;
   currentWorkout = {
     id:generateId(), date:today(), title:'Séance musculation',
-    trainingType:'hypertrophie', startTime:Date.now(), items:[], exercises:[], notes:''
+    trainingType:'Masse', startTime:Date.now(), items:[], exercises:[], notes:''
   };
   document.getElementById('active-workout-title').textContent = currentWorkout.title;
   document.getElementById('workout-title-input').value = currentWorkout.title;
   const wdInput = document.getElementById('workout-date-input');
   if(wdInput) wdInput.value = today();
-  setVal('workout-training-type','hypertrophie');
+  populateTrainingTypes('Masse'); setVal('workout-training-type','Masse');
   renderActiveWorkout();
   openModal('modal-workout');
 }
@@ -2866,7 +2770,7 @@ function updateItemUnit(ii, val) {
 }
 
 function renderBlocItem(bloc, ii) {
-  return `<div class="exercise-entry" style="border-left:3px solid var(--accent-neon);background:rgba(0,229,255,0.04)">
+  return `<div class="exercise-entry" style="border-left:3px solid var(--accent-neon);background:rgba(216,216,220,0.04)">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
       <span style="font-size:16px">🔁</span>
       <span style="font-weight:700;font-size:14px;color:var(--accent-neon)">${bloc.name}</span>
@@ -2905,9 +2809,9 @@ function renderBlocItem(bloc, ii) {
         <button class="btn btn-ghost btn-sm" style="margin-top:4px;font-size:11px" onclick="addBlocExSet(${ii},${ei})">+ Série</button>
       </div>`).join('')}
     <div style="display:flex;gap:6px;margin-top:4px">
-      <button class="btn btn-ghost btn-sm" style="border-color:rgba(0,229,255,0.3);color:var(--accent-neon)"
+      <button class="btn btn-ghost btn-sm" style="border-color:rgba(216,216,220,0.3);color:var(--accent-neon)"
         onclick="openAddExToBloc(${ii})">+ Exercice dans le bloc</button>
-      <button class="btn btn-ghost btn-sm" style="border-color:rgba(255,209,102,0.3);color:var(--accent-gold)"
+      <button class="btn btn-ghost btn-sm" style="border-color:rgba(181,72,93,0.3);color:var(--accent-gold)"
         onclick="saveBlocToLibrary(${ii})">📚 Sauvegarder ce bloc</button>
     </div>
   </div>`;
@@ -2991,7 +2895,7 @@ function renderEmomItem(emom, ii) {
       </div>`).join('')}
     <div style="display:flex;gap:6px;margin-top:6px">
       <button class="btn btn-ghost btn-sm" onclick="addEmomMinute(${ii})">+ Minute</button>
-      <button class="btn btn-ghost btn-sm" style="border-color:rgba(255,209,102,0.3);color:var(--accent-gold)" onclick="saveEmomToLibrary(${ii})">📚 Sauvegarder cet EMOM</button>
+      <button class="btn btn-ghost btn-sm" style="border-color:rgba(181,72,93,0.3);color:var(--accent-gold)" onclick="saveEmomToLibrary(${ii})">📚 Sauvegarder cet EMOM</button>
     </div>
   </div>`;
 }
@@ -3439,7 +3343,7 @@ function finishWorkout() {
   if(!currentWorkout||(currentWorkout.items||[]).length===0){ showToast('⚠️ Ajoutez au moins un exercice','error'); return; }
   currentWorkout.title = document.getElementById('workout-title-input')?.value || currentWorkout.title;
   currentWorkout.date = document.getElementById('workout-date-input')?.value || currentWorkout.date || today();
-  currentWorkout.trainingType = document.getElementById('workout-training-type')?.value || 'hypertrophie';
+  currentWorkout.trainingType = document.getElementById('workout-training-type')?.value || 'Masse';
   currentWorkout.duration = Math.round((Date.now()-currentWorkout.startTime)/60000)||1;
   // Calcul volume sur tous les exercices (blocs inclus)
   const allEx = _getExercisesFlat(currentWorkout);
@@ -3596,7 +3500,7 @@ function showWorkoutDetail(id) {
       </div>
       <div style="display:flex;gap:6px;flex-shrink:0">
         <button onclick="shareWorkout('${w.id}')" class="btn btn-neon btn-sm" title="Partager">📤</button>
-        <button onclick="deleteWorkout('${w.id}')" class="btn btn-ghost btn-sm" style="color:var(--accent-fire);border-color:rgba(255,77,28,0.3)">🗑</button>
+        <button onclick="deleteWorkout('${w.id}')" class="btn btn-ghost btn-sm" style="color:var(--accent-fire);border-color:rgba(155,29,52,0.3)">🗑</button>
       </div>
     </div>
     ${itemsHtml || '<div class="text-muted text-sm">Aucun détail disponible</div>'}`;
@@ -3761,7 +3665,7 @@ function resetCustomExForm() {
 }
 
 async function generateAIWorkout() {
-  const type = document.getElementById('ai-workout-type')?.value||'hypertrophie';
+  const type = document.getElementById('ai-workout-type')?.value||'Masse';
   const dur = parseInt(document.getElementById('ai-workout-duration')?.value)||60;
   const btn = document.getElementById('btn-generate-ai');
   if(btn){ btn.innerHTML='<span class="spinner"></span> Génération...'; btn.disabled=true; }
@@ -3771,8 +3675,9 @@ async function generateAIWorkout() {
     if(!currentWorkout) startNewWorkout();
     result.exercises.forEach(ex=>{
       const found = state.exercises_library.find(e=>e.name.toLowerCase()===ex.name.toLowerCase());
-      currentWorkout.exercises.push({
-        exerciseId:found?.id||generateId(), name:ex.name, muscle:ex.muscle||'Général', isWOD:false,
+      currentWorkout.items.push({
+        type:'exercise', unit:'reps',
+        exerciseId:found?.id||generateId(), name:ex.name, muscle:ex.muscle||'Général',
         sets:Array.from({length:ex.sets||3},()=>({reps:ex.reps||'10',weight:'',rest:ex.rest||90}))
       });
     });
@@ -4009,12 +3914,7 @@ function saveSwim() {
   renderSwimHistory();
 }
 
-function deleteCombat(id) {
-  if(!confirm('Supprimer cette séance combat ?')) return;
-  state.combats = state.combats.filter(c=>c.id!==id);
-  saveState(); renderCombatHistory();
-  showToast('🗑 Séance supprimée','success');
-}
+
 
 function renderSwimHistory() {
   const el = document.getElementById('swim-history-list');
@@ -4039,49 +3939,9 @@ function renderSwimHistory() {
   setText('swim-total-sessions', (state.swims||[]).length);
 }
 
-// ════════════════════════════════════════════════
-// COMBAT
-// ════════════════════════════════════════════════
-function saveCombat() {
-  const sport = document.getElementById('combat-sport')?.value;
-  const type = document.getElementById('combat-type')?.value;
-  const intensity = parseInt(document.getElementById('combat-intensity')?.value)||5;
-  const duration = parseInt(document.getElementById('combat-duration')?.value);
-  const date = document.getElementById('combat-date')?.value||today();
-  const notes = document.getElementById('combat-notes')?.value||'';
-  if(!duration){ showToast('⚠️ Durée requise','error'); return; }
-  const met = {technique:5,sparring:9,cardio:8,mixte:7,renforcement:5,etirements:3,combat:9}[type]||7;
-  const calories = Math.round(met*(state.profile.weight||75)*(duration/60)*(intensity/5));
-  const session = {id:generateId(),date,sport,type,intensity,duration,calories,notes};
-  state.combats.push(session);
-  addXP(20+Math.round(duration/5));
-  updateStreak(); checkAchievements(); saveState();
-  closeModal('modal-combat');
-  showToast('🥊 Séance combat enregistrée !','success');
-  renderCombatHistory();
-}
 
-function renderCombatHistory() {
-  const el = document.getElementById('combat-history-list');
-  if(!el) return;
-  const sorted = [...state.combats].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,20);
-  el.innerHTML = sorted.length ? sorted.map(c=>`
-    <div class="exercise-entry" style="display:flex;justify-content:space-between;align-items:center">
-      <div><div style="font-weight:600">${c.sport||'Combat'} — ${c.type}</div>
-        <div class="text-muted text-sm">${formatDateFr(c.date)}</div></div>
-      <div style="display:flex;gap:12px;align-items:center;text-align:center">
-        <div><div class="text-fire text-mono">${c.duration} min</div><div class="text-muted text-sm">Durée</div></div>
-        <div><div class="text-gold">${c.intensity}/10</div><div class="text-muted text-sm">Intensité</div></div>
-        <div><div class="text-green text-mono">~${c.calories||'?'}</div><div class="text-muted text-sm">kcal</div></div>
-        <button onclick="shareCombat('${c.id}')" class="btn btn-neon btn-sm" style="padding:4px 8px" title="Partager">📤</button>
-        <button onclick="deleteCombat('${c.id}')" class="btn btn-ghost btn-sm" style="color:var(--accent-fire);padding:4px 8px" title="Supprimer">🗑</button>
-      </div>
-    </div>`).join('')
-  : '<div class="text-muted" style="padding:24px;text-align:center">Aucune séance combat</div>';
-  setText('combat-total', state.combats.length);
-  setText('combat-calories', state.combats.reduce((s,c)=>s+(c.calories||0),0).toLocaleString());
-  setText('combat-time', state.combats.reduce((s,c)=>s+(c.duration||0),0)+' min');
-}
+
+
 
 // ════════════════════════════════════════════════
 // STEPS (Pas journaliers)
@@ -4138,7 +3998,7 @@ function renderAnalysis() {
 
   createBarChart('analysis-volume-chart', last30.map(d=>d.slice(5).replace('-','/')), [{
     label:'Volume (kg)', data:volData,
-    backgroundColor:'rgba(255,77,28,0.5)', borderColor:'#ff4d1c',
+    backgroundColor:'rgba(155,29,52,0.5)', borderColor:'#9b1d34',
     borderRadius:3, borderWidth:1
   }]);
 
@@ -4146,8 +4006,8 @@ function renderAnalysis() {
   if(runs.length>=2) createLineChart('analysis-run-chart',
     runs.map(r=>r.date.slice(5).replace('-','/')),
     [{label:'Allure (min/km)',data:runs.map(r=>r.pace||0),
-      borderColor:'#00e5ff',backgroundColor:'rgba(0,229,255,0.08)',
-      tension:0.4,fill:true,pointBackgroundColor:'#00e5ff'}]);
+      borderColor:'#d8d8dc',backgroundColor:'rgba(216,216,220,0.08)',
+      tension:0.4,fill:true,pointBackgroundColor:'#d8d8dc'}]);
 
   const vol = weeklyVolume();
   const muscles=Object.keys(vol), vols=muscles.map(m=>vol[m]);
@@ -4168,8 +4028,9 @@ function renderAnalysis() {
   }
 
   const wAgo=formatDate(new Date(Date.now()-7*86400000));
-  setText('week-sessions', state.workouts.filter(w=>w.date>=wAgo).length+state.runs.filter(r=>r.date>=wAgo).length+state.combats.filter(c=>c.date>=wAgo).length+(state.swims||[]).filter(s=>s.date>=wAgo).length);
+  setText('week-sessions', state.workouts.filter(w=>w.date>=wAgo).length+state.runs.filter(r=>r.date>=wAgo).length+(state.freeSessions||[]).filter(c=>c.date>=wAgo).length+(state.swims||[]).filter(s=>s.date>=wAgo).length);
   setText('week-distance', state.runs.filter(r=>r.date>=wAgo).reduce((s,r)=>s+(r.distance||0),0).toFixed(1)+' km');
+  setText('week-kcal', '~'+calcBurnedCalories(formatDate(new Date(Date.now()-6*86400000)),today()).toLocaleString()+' kcal');
   setText('week-volume', Math.round(state.workouts.filter(w=>w.date>=wAgo).reduce((s,w)=>s+(w.totalVolume||0),0)).toLocaleString()+' kg');
 }
 
@@ -4214,8 +4075,8 @@ function renderRecovery() {
   if(sorted.length>=2){
     const rev=[...sorted].reverse();
     createLineChart('recovery-chart',rev.map(r=>r.date.slice(5).replace('-','/')),
-      [{label:'Sommeil',data:rev.map(r=>r.sleep),borderColor:'#00e5ff',tension:0.4,fill:false,pointRadius:3},
-       {label:'Fatigue',data:rev.map(r=>r.fatigue),borderColor:'#ff4d1c',tension:0.4,fill:false,pointRadius:3}]);
+      [{label:'Sommeil',data:rev.map(r=>r.sleep),borderColor:'#d8d8dc',tension:0.4,fill:false,pointRadius:3},
+       {label:'Fatigue',data:rev.map(r=>r.fatigue),borderColor:'#9b1d34',tension:0.4,fill:false,pointRadius:3}]);
   }
 }
 
@@ -4231,154 +4092,16 @@ async function getRecoveryAdvice() {
   if(el){el.textContent=stripMarkdown(advice); if(box) box.style.display='block';}
 }
 
-// ════════════════════════════════════════════════
-// NUTRITION
-// ════════════════════════════════════════════════
 // Calcule les calories brûlées par les séances du jour
-function calcTodayBurnedCalories() {
-  const tod = today();
-  const w = state.profile.weight || 75;
-  let burned = 0;
 
-  // Musculation (MET 5)
-  state.workouts.filter(x=>x.date===tod).forEach(x=>{
-    burned += Math.round(5 * w * ((x.duration||45)/60));
-  });
-  // Course (MET selon allure)
-  state.runs.filter(x=>x.date===tod).forEach(x=>{
-    const met = x.pace ? Math.min(16, Math.max(7, 60/(x.pace||6))) : 9;
-    burned += Math.round(met * w * ((x.duration||30)/60));
-  });
-  // Combat (MET selon type)
-  state.combats.filter(x=>x.date===tod).forEach(x=>{
-    const met = {technique:5,sparring:9,cardio:8,renforcement:5,etirements:3,mixte:7}[x.type]||7;
-    burned += Math.round(met * w * ((x.duration||60)/60));
-  });
-  // Piscine (MET 7)
-  (state.swims||[]).filter(x=>x.date===tod).forEach(x=>{
-    burned += Math.round(7 * w * ((x.duration||45)/60));
-  });
 
-  return burned;
-}
 
-function renderNutrition() {
-  const p = state.profile, bmr = calcBMR(p), tdee = calcTDEE(p);
-  setText('nutr-bmr', bmr.toLocaleString());
-  setText('nutr-tdee', tdee.toLocaleString());
 
-  // Calories brûlées par les séances d'aujourd'hui
-  const burnedToday = calcTodayBurnedCalories();
-  setText('nutr-burned-today', burnedToday > 0 ? '+' + burnedToday + ' kcal brûlées' : 'Aucune séance aujourd\'hui');
 
-  // Indicateur visuel
-  const burnedEl = document.getElementById('nutr-burned-box');
-  if(burnedEl) {
-    burnedEl.style.display = burnedToday > 0 ? 'block' : 'none';
-  }
 
-  // Base calorique selon objectif
-  let baseCal;
-  if(p.goal==='muscle')      baseCal = tdee + 300;
-  else if(p.goal==='loss')   baseCal = tdee - 400;
-  else                        baseCal = tdee;
 
-  // Ajustement selon séances du jour
-  // Muscu/combat : +50% des calories brûlées (récupération musculaire)
-  // Course : +60% (endurance, glycogène)
-  const todayWorkouts = state.workouts.filter(x=>x.date===today()).length;
-  const todayRuns = state.runs.filter(x=>x.date===today()).length;
-  const todaySwims = (state.swims||[]).filter(x=>x.date===today()).length;
-  const todayCombats = state.combats.filter(x=>x.date===today()).length;
 
-  let adjustment = 0;
-  if(burnedToday > 0) {
-    if(todayRuns > 0 || todaySwims > 0) adjustment = Math.round(burnedToday * 0.6);
-    else adjustment = Math.round(burnedToday * 0.5);
-  }
 
-  const cal = baseCal + adjustment;
-  const protein = Math.round(p.weight * (p.goal==='muscle' ? 2 : p.goal==='loss' ? 2.2 : 1.8));
-  const fat = Math.round(cal * (p.goal==='muscle' ? 0.25 : 0.3) / 9);
-  const carbs = Math.round((cal - protein*4 - fat*9) / 4);
-
-  setText('nutr-calories', cal.toLocaleString());
-  setText('nutr-protein', protein + 'g');
-  setText('nutr-carbs', carbs + 'g');
-  setText('nutr-fat', fat + 'g');
-
-  // Badge d'ajustement
-  const adjEl = document.getElementById('nutr-adjustment');
-  if(adjEl) {
-    if(adjustment > 0) {
-      const sessions = [
-        todayWorkouts > 0 ? todayWorkouts + ' muscu' : '',
-        todayRuns > 0 ? todayRuns + ' course' : '',
-        todaySwims > 0 ? todaySwims + ' natation' : '',
-        todayCombats > 0 ? todayCombats + ' combat' : ''
-      ].filter(Boolean).join(', ');
-      adjEl.textContent = '+ ' + adjustment + ' kcal (ajusté · ' + sessions + ')';
-      adjEl.style.color = 'var(--accent-green)';
-      adjEl.style.display = 'inline-block';
-    } else {
-      adjEl.style.display = 'none';
-    }
-  }
-
-  createDoughnutChart('nutr-macro-chart',
-    ['Protéines','Glucides','Lipides'],
-    [protein*4, carbs*4, fat*9],
-    ['#06d6a0','#00e5ff','#ffd166']);
-
-  const todayLog = state.nutrition.find(n => n.date===today());
-  const pct = todayLog ? Math.min(100, Math.round((todayLog.calories / cal) * 100)) : 0;
-  const pctEl = document.getElementById('nutr-today-pct');
-  if(pctEl) pctEl.style.width = pct + '%';
-  setText('nutr-today-calories', todayLog ? todayLog.calories : '0');
-  setText('nutr-today-target', cal.toLocaleString());
-}
-
-function saveNutritionLog() {
-  const cal=parseInt(document.getElementById('nutr-log-calories')?.value);
-  if(!cal){ showToast('⚠️ Calories requises','error'); return; }
-  const entry={date:today(),calories:cal,
-    protein:parseInt(document.getElementById('nutr-log-protein')?.value)||0,
-    carbs:parseInt(document.getElementById('nutr-log-carbs')?.value)||0,
-    fat:parseInt(document.getElementById('nutr-log-fat')?.value)||0};
-  const idx=state.nutrition.findIndex(n=>n.date===today());
-  if(idx>=0) state.nutrition[idx]=entry; else state.nutrition.push(entry);
-  saveState(); checkAchievements(); closeModal('modal-nutrition-log'); renderNutrition();
-  showToast('🥗 Repas enregistré','success');
-}
-
-async function getNutritionAdvice() {
-  const btn=document.getElementById('btn-nutr-advice');
-  if(btn){btn.innerHTML='<span class="spinner"></span>';btn.disabled=true;}
-  const advice=await AI.nutritionAdvice();
-  if(btn){btn.textContent='🤖 Recommandations IA';btn.disabled=false;}
-  const el=document.getElementById('nutr-ai-result'), box=document.getElementById('nutr-ai-box');
-  if(el){el.textContent=stripMarkdown(advice); if(box) box.style.display='block';}
-}
-
-async function estimateCaloriesFromPlate() {
-  const desc = document.getElementById('nutr-plate-desc')?.value?.trim();
-  if(!desc){ showToast('⚠️ Décrivez votre assiette','error'); return; }
-  const btn = document.getElementById('btn-estimate-calories');
-  if(btn){ btn.innerHTML='<span class="spinner"></span> Calcul...'; btn.disabled=true; }
-  const result = await AI.estimatePlateCalories(desc);
-  if(btn){ btn.textContent='🤖 Estimer les calories'; btn.disabled=false; }
-  const el = document.getElementById('nutr-estimate-result');
-  if(el){ el.textContent = stripMarkdown(result); el.style.display='block'; }
-  // Auto-remplir les champs si l'IA retourne des valeurs
-  const calMatch = result.match(/(\d{3,4})\s*(?:kcal|cal|calories)/i);
-  const protMatch = result.match(/protéines?\s*[:\s]+(\d+)\s*g/i);
-  const carbMatch = result.match(/glucides?\s*[:\s]+(\d+)\s*g/i);
-  const fatMatch  = result.match(/lipides?\s*[:\s]+(\d+)\s*g/i);
-  if(calMatch)  { const el=document.getElementById('nutr-log-calories'); if(el) el.value=calMatch[1]; }
-  if(protMatch) { const el=document.getElementById('nutr-log-protein');  if(el) el.value=protMatch[1]; }
-  if(carbMatch) { const el=document.getElementById('nutr-log-carbs');    if(el) el.value=carbMatch[1]; }
-  if(fatMatch)  { const el=document.getElementById('nutr-log-fat');      if(el) el.value=fatMatch[1]; }
-}
 
 // ════════════════════════════════════════════════
 // GAMIFICATION
@@ -4387,7 +4110,7 @@ function renderGamification() {
   const p=state.profile;
   setText('gami-streak',p.streak); setText('gami-xp',p.xp.toLocaleString());
   setText('gami-level',p.level);
-  setText('gami-total-workouts',state.workouts.length+state.runs.length+state.combats.length+(state.swims||[]).length);
+  setText('gami-total-workouts',state.workouts.length+state.runs.length+(state.freeSessions||[]).length+(state.swims||[]).length);
   const xpCur=XP_THRESHOLDS[p.level-1]||0, xpNxt=XP_THRESHOLDS[Math.min(p.level,XP_THRESHOLDS.length-1)]||9999;
   const pct=xpNxt>xpCur?Math.round(((p.xp-xpCur)/(xpNxt-xpCur))*100):100;
   const bar=document.getElementById('gami-xp-bar'); if(bar) bar.style.width=Math.min(100,pct)+'%';
@@ -4428,7 +4151,7 @@ function renderCalendar() {
     const ds=`${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const isToday=ds===tod;
     const dayPlans=state.plans.filter(p=>p.date===ds);
-    const hasActivity=state.workouts.some(w=>w.date===ds)||state.runs.some(r=>r.date===ds)||state.combats.some(c=>c.date===ds)||(state.swims||[]).some(s=>s.date===ds);
+    const hasActivity=state.workouts.some(w=>w.date===ds)||state.runs.some(r=>r.date===ds)||(state.freeSessions||[]).some(c=>c.date===ds)||(state.swims||[]).some(s=>s.date===ds);
     html+=`<div class="cal-day ${isToday?'today':''} ${dayPlans.length||hasActivity?'has-workout':''}" onclick="calDayClick('${ds}')">
       <span style="font-size:13px">${d}</span>
       ${dayPlans.length>1?`<span style="font-size:9px;color:var(--accent-neon)">${dayPlans.length} séances</span>`:''}
@@ -4473,7 +4196,7 @@ function renderWeekdayPicker(selectedDays) {
   el.innerHTML = WEEKDAY_LABELS.map((label, idx) => `
     <button type="button" onclick="toggleWeekday(${idx})" data-day="${idx}"
       class="weekday-pill ${selectedDays.includes(idx)?'active':''}"
-      style="width:38px;height:38px;border-radius:50%;border:1px solid var(--border);background:${selectedDays.includes(idx)?'var(--accent-neon)':'var(--bg-3)'};color:${selectedDays.includes(idx)?'#0a0a0c':'var(--text-1)'};font-size:12px;font-weight:600;cursor:pointer">
+      style="width:38px;height:38px;border-radius:50%;border:1px solid var(--border);background:${selectedDays.includes(idx)?'var(--accent-neon)':'var(--bg-3)'};color:${selectedDays.includes(idx)?'#0b0b0c':'var(--text-1)'};font-size:12px;font-weight:600;cursor:pointer">
       ${label[0]}
     </button>`).join('');
 }
@@ -4484,7 +4207,7 @@ function toggleWeekday(idx) {
   const isActive = btn.classList.contains('active');
   btn.classList.toggle('active');
   btn.style.background = isActive ? 'var(--bg-3)' : 'var(--accent-neon)';
-  btn.style.color = isActive ? 'var(--text-1)' : '#0a0a0c';
+  btn.style.color = isActive ? 'var(--text-1)' : '#0b0b0c';
 }
 
 function getSelectedWeekdays() {
@@ -4700,6 +4423,7 @@ function renderSettings() {
   setVal('set-weight',p.weight||''); setVal('set-height',p.height||'');
   setVal('set-goal',p.goal||'muscle'); setVal('set-activity',p.activity||'moderate');
   setVal('set-apikey',p.apiKey||'');
+  setVal('set-gemini-model',p.geminiModel||'gemini-3.5-flash');
   // JSONBin
   try{
     const cfg=JSON.parse(localStorage.getItem('fitcoach_jsonbin')||'{}');
@@ -4718,6 +4442,7 @@ function saveSettings() {
   state.profile.goal=document.getElementById('set-goal')?.value||'muscle';
   state.profile.activity=document.getElementById('set-activity')?.value||'moderate';
   state.profile.apiKey=(document.getElementById('set-apikey')?.value||'').trim();
+  state.profile.geminiModel=(document.getElementById('set-gemini-model')?.value||'').trim()||'gemini-3.5-flash';
   // JSONBin config (saved separately, not in state)
   const jbKey=(document.getElementById('set-jb-key')?.value||'').trim();
   const jbBinId=(document.getElementById('set-jb-binid')?.value||'').trim();
@@ -4734,46 +4459,22 @@ function saveSettings() {
 }
 
 
-async function testMistralKey() {
+async function testGeminiKey() {
   const key = (document.getElementById('set-apikey')?.value || '').trim();
-  if (!key) { showToast('⚠️ Entrez une clé Mistral', 'error'); return; }
-
+  const model = (document.getElementById('set-gemini-model')?.value || '').trim() || 'gemini-3.5-flash';
+  if (!key) { showToast('⚠️ Entrez une clé Gemini', 'error'); return; }
+  state.profile.apiKey = key; state.profile.geminiModel = model;
   const btn = document.getElementById('btn-test-key');
   const resultEl = document.getElementById('api-test-result');
   if (btn) { btn.innerHTML = '<span class="spinner"></span> Test...'; btn.disabled = true; }
-  if (resultEl) { resultEl.style.display = 'none'; }
-
-  try {
-    const resp = await fetch('https://api.mistral.ai/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
-      body: JSON.stringify({
-        model: 'mistral-large-latest',
-        messages: [{ role: 'user', content: 'Dis juste: OK' }],
-        max_tokens: 5
-      })
-    });
-    if (resp.ok) {
-      const data = await resp.json();
-      const reply = data.choices?.[0]?.message?.content?.trim() || '✓';
-      if (resultEl) { resultEl.textContent = '✅ Clé valide ! Réponse Mistral : "' + reply + '"'; resultEl.style.color = 'var(--accent-green)'; resultEl.style.display = 'block'; }
-      showToast('✅ Clé Mistral valide !', 'success');
-    } else {
-      let msg = resp.statusText;
-      try { const j = await resp.json(); msg = j.message || msg; } catch {}
-      const txt = resp.status === 401 ? '❌ Clé invalide (401) — Régénérez-la sur console.mistral.ai'
-                : resp.status === 429 ? '⏳ Quota dépassé (429) — Attendez ou vérifiez votre plan'
-                : '❌ Erreur ' + resp.status + ': ' + msg;
-      if (resultEl) { resultEl.textContent = txt; resultEl.style.color = 'var(--accent-fire)'; resultEl.style.display = 'block'; }
-      showToast(txt, 'error');
-    }
-  } catch (e) {
-    const txt = e.message?.includes('fetch') || e.message?.includes('Failed') ? '🌐 Réseau inaccessible. Ouvrez l\'app via http:// (pas file://)'
-              : '❌ ' + e.message;
-    if (resultEl) { resultEl.textContent = txt; resultEl.style.color = 'var(--accent-fire)'; resultEl.style.display = 'block'; }
-    showToast(txt, 'error');
-  }
+  const r = await AI._gemini('Réponds en un mot.', [{ role: 'user', parts: [{ text: 'Dis juste: OK' }] }], 0);
   if (btn) { btn.textContent = '🔍 Tester'; btn.disabled = false; }
+  if (resultEl) {
+    resultEl.style.display = 'block';
+    resultEl.style.color = r.error ? 'var(--accent-fire)' : 'var(--accent-green)';
+    resultEl.textContent = r.error ? r.error : '✅ Clé valide ! ' + model + ' répond : "' + r.text.slice(0, 40) + '"';
+  }
+  showToast(r.error ? r.error : '✅ Gemini fonctionne !', r.error ? 'error' : 'success');
 }
 
 
@@ -4892,6 +4593,137 @@ function resetAllData(){
 // 5. APP INIT
 // ════════════════════════════════════════════════════════════
 
+
+// ════════════════════════════════════════════════
+// CALORIES DÉPENSÉES (estimation MET)
+// ════════════════════════════════════════════════
+const FREE_SPORT_MET = {'boxe':9,'krav maga':8,'marche':3.8,'vélo':7.5,'velo':7.5,'padel':6.5,'tennis':7,'escalade':8,'rando':6,'randonnée':6,'football':8,'natation':7};
+function estimateFreeCalories(s) {
+  if(s.calories) return s.calories;
+  const w = state.profile.weight || 75;
+  const met = FREE_SPORT_MET[(s.sport||'').toLowerCase()] || 6;
+  const factor = 0.8 + 0.04*(s.intensity||5);   // intensité 5 = x1.0
+  return Math.round(met * factor * w * ((s.duration||45)/60));
+}
+function calcBurnedCalories(from, to) {
+  const w = state.profile.weight || 75;
+  const inR = d => d >= from && d <= to;
+  let k = 0;
+  state.workouts.filter(x=>inR(x.date)).forEach(x=>{ k += 5 * w * ((x.duration||45)/60); });
+  state.runs.filter(x=>inR(x.date)).forEach(x=>{
+    k += x.calories || Math.min(16, Math.max(7, x.pace ? 60/x.pace : 9)) * w * ((x.duration||30)/60);
+  });
+  (state.swims||[]).filter(x=>inR(x.date)).forEach(x=>{ k += 7 * w * ((x.duration||45)/60); });
+  (state.freeSessions||[]).filter(x=>inR(x.date)).forEach(x=>{ k += estimateFreeCalories(x); });
+  return Math.round(k);
+}
+
+// ════════════════════════════════════════════════
+// ENTRAÎNEMENT LIBRE
+// ════════════════════════════════════════════════
+function populateFreeSports(selected) {
+  const sel = document.getElementById('free-sport'); if(!sel) return;
+  const sports = state.free_sports || [];
+  sel.innerHTML = sports.map(s=>`<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('')
+    + '<option value="__new__">＋ Autre sport…</option>';
+  if(selected && sports.includes(selected)) sel.value = selected;
+  onFreeSportChange();
+}
+function onFreeSportChange() {
+  const v = document.getElementById('free-sport')?.value;
+  const box = document.getElementById('free-sport-new-box');
+  if(box) box.style.display = v === '__new__' ? 'block' : 'none';
+}
+function openFreeModal() {
+  populateFreeSports();
+  setVal('free-date', today()); setVal('free-duration',''); setVal('free-kcal',''); setVal('free-desc',''); setVal('free-sport-new','');
+  setVal('free-intensity', 6);
+  openModal('modal-free');
+}
+function saveFree() {
+  let sport = document.getElementById('free-sport')?.value;
+  if(sport === '__new__') {
+    sport = (document.getElementById('free-sport-new')?.value||'').trim();
+    if(!sport){ showToast('⚠️ Nom du sport requis','error'); return; }
+    if(!state.free_sports.some(s=>s.toLowerCase()===sport.toLowerCase())) state.free_sports.push(sport);
+  }
+  const duration = parseInt(document.getElementById('free-duration')?.value);
+  if(!duration){ showToast('⚠️ Durée requise','error'); return; }
+  const s = {
+    id: generateId(), sport, duration,
+    date: document.getElementById('free-date')?.value || today(),
+    intensity: parseInt(document.getElementById('free-intensity')?.value) || 6,
+    calories: parseInt(document.getElementById('free-kcal')?.value) || null,
+    description: document.getElementById('free-desc')?.value || ''
+  };
+  s.calories = estimateFreeCalories(s);
+  state.freeSessions.push(s);
+  addXP(Math.round(duration/3)+10);
+  updateStreak(); checkAchievements(); saveState();
+  closeModal('modal-free');
+  showToast('🏅 '+sport+' enregistré (~'+s.calories+' kcal)','success');
+  renderFreeHistory(); renderDashboard();
+}
+function deleteFree(id) {
+  if(!confirm('Supprimer cet entraînement ?')) return;
+  state.freeSessions = state.freeSessions.filter(c=>c.id!==id);
+  saveState(); renderFreeHistory(); renderDashboard();
+  showToast('🗑 Entraînement supprimé','success');
+}
+function renderFreeHistory() {
+  const el = document.getElementById('free-history-list');
+  if(!el) return;
+  const list = [...(state.freeSessions||[])].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,30);
+  el.innerHTML = list.length ? list.map(c=>`
+    <div class="exercise-entry" style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+      <div style="min-width:0;flex:1">
+        <div style="font-weight:600">${escapeHtml(c.sport)}</div>
+        <div class="text-muted text-sm">${formatDateFr(c.date)} · ${c.duration} min · ~${estimateFreeCalories(c)} kcal</div>
+        ${c.description?`<div class="text-muted text-sm" style="margin-top:2px">${escapeHtml(c.description)}</div>`:''}
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        <button onclick="shareFree('${c.id}')" class="btn btn-neon btn-sm" style="padding:4px 8px" title="Partager">📤</button>
+        <button onclick="deleteFree('${c.id}')" class="btn btn-ghost btn-sm" style="color:var(--accent-fire);padding:4px 8px" title="Supprimer">🗑</button>
+      </div>
+    </div>`).join('')
+  : '<div class="text-muted" style="padding:24px;text-align:center">Aucun entraînement libre.<br>Boxe, marche, vélo, padel… ajoute ta première séance.</div>';
+  const all = state.freeSessions||[];
+  setText('free-total', all.length);
+  setText('free-calories', all.reduce((s,c)=>s+estimateFreeCalories(c),0).toLocaleString());
+  setText('free-time', all.reduce((s,c)=>s+(c.duration||0),0)+' min');
+}
+
+// ════════════════════════════════════════════════
+// TYPES DE SÉANCE MUSCU (Force / Volume / Masse + perso)
+// ════════════════════════════════════════════════
+function populateTrainingTypes(selected) {
+  const types = state.training_types || ['Force','Volume','Masse'];
+  const opts = (sel) => {
+    let list = [...types];
+    if(sel && !list.includes(sel)) list.push(sel);   // ancien type conservé
+    return list.map(t=>`<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join('')
+      + '<option value="__new__">＋ Nouveau type…</option>';
+  };
+  ['workout-training-type','edit-tpl-type','ai-workout-type'].forEach(id=>{
+    const el = document.getElementById(id); if(!el) return;
+    const prev = id==='edit-tpl-type' ? selected : (selected || el.value);
+    el.innerHTML = opts(prev);
+    if(prev) el.value = prev;
+  });
+}
+function onTrainingTypeChange(el) {
+  if(el.value === '__new__') {
+    const name = (prompt('Nom du nouveau type de séance ?')||'').trim();
+    if(name) {
+      if(!state.training_types.some(t=>t.toLowerCase()===name.toLowerCase())) state.training_types.push(name);
+      saveState();
+      populateTrainingTypes(name);
+      el.value = name;
+    } else { populateTrainingTypes('Masse'); el.value = currentWorkout?.trainingType || 'Masse'; }
+  }
+  if(currentWorkout && el.id==='workout-training-type') currentWorkout.trainingType = el.value;
+}
+
 // ════════════════════════════════════════════════════════════
 // PARTAGE DE SÉANCE (SMS / texte)
 // ════════════════════════════════════════════════════════════
@@ -4999,32 +4831,31 @@ function formatSwimForShare(s) {
   return lines.join('\n');
 }
 
-function formatCombatForShare(c) {
-  const lines = [];
-  lines.push('🥊 ' + (c.sport || 'Combat') + ' — ' + c.type);
-  lines.push('📅 ' + formatDateFr(c.date));
-  lines.push('');
-  if(c.duration) lines.push('⏱️ Durée : ' + c.duration + ' min');
-  if(c.intensity) lines.push('💪 Intensité : ' + c.intensity + '/10');
-  if(c.calories) lines.push('🔥 Calories : ~' + c.calories + ' kcal');
-  if(c.notes) { lines.push(''); lines.push('📝 ' + c.notes); }
-  lines.push('');
-  lines.push('— Envoyé depuis FitCoach Pro 💪');
-  return lines.join('\n');
-}
 
+
+function formatFreeForShare(c) {
+  const l=['🏅 '+c.sport,'📅 '+formatDateFr(c.date),''];
+  if(c.duration) l.push('⏱️ Durée : '+c.duration+' min');
+  if(c.intensity) l.push('💪 Intensité : '+c.intensity+'/10');
+  if(c.calories) l.push('🔥 Calories : ~'+c.calories+' kcal');
+  if(c.description){ l.push(''); l.push('📝 '+c.description); }
+  l.push(''); l.push('— Envoyé depuis FitCoach Pro 💪');
+  return l.join('\n');
+}
 function shareWorkout(id) { const w = state.workouts.find(x=>x.id===id); if(w) shareViaSMS(formatWorkoutForShare(w)); }
 function shareRun(id)     { const r = state.runs.find(x=>x.id===id); if(r) shareViaSMS(formatRunForShare(r)); }
+function shareFree(id)    { const c=(state.freeSessions||[]).find(x=>x.id===id); if(c) shareViaSMS(formatFreeForShare(c)); }
 function shareSwim(id)    { const s = (state.swims||[]).find(x=>x.id===id); if(s) shareViaSMS(formatSwimForShare(s)); }
-function shareCombat(id)  { const c = state.combats.find(x=>x.id===id); if(c) shareViaSMS(formatCombatForShare(c)); }
+
 
 document.addEventListener('DOMContentLoaded', async () => {
   updateHeaderDate();
   setInterval(updateHeaderDate, 60000);
+  populateTrainingTypes();
 
   // Dates par défaut
   const todayVal = today();
-  ['run-date','combat-date','swim-date','steps-date'].forEach(id => {
+  ['run-date','free-date','swim-date','steps-date'].forEach(id => {
     const e = document.getElementById(id); if (e) e.value = todayVal;
   });
 
